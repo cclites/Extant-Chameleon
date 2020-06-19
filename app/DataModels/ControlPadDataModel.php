@@ -28,4 +28,8 @@ class ControlPadDataModel
     {
         //TODO: Add call to update ControlPad orders and handle response
     }
+
+    public function isLive(){
+
+    }
 }

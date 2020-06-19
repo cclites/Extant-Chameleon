@@ -22,4 +22,12 @@ class ControlPad
     {
         //TODO: Call get function in ShipStationDataModel
     }
+
+    /***************************************************
+     * VALIDATION
+     ***************************************************/
+
+    public function rules(){}
+
+
 }

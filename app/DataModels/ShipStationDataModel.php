@@ -30,4 +30,8 @@ class ShipStationDataModel
     {
         //TODO: Add API call to update ShipStation orders and handle response
     }
+
+    public function isLive(){
+        //Does not respond to pings. What if I ping it with an authenticated header?
+    }
 }
