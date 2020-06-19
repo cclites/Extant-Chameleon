@@ -8,7 +8,8 @@
         "php": "^7.2.5",
         "flipbox/lumen-generator": "^7.0",
         "guzzlehttp/guzzle": "^6.5",
-        "laravel/lumen-framework": "^7.0"
+        "laravel/lumen-framework": "^7.0",
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",
