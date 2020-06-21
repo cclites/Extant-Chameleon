@@ -1,7 +1,8 @@
 <?php
 
-
 namespace App;
+
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class ShipStation
@@ -13,29 +14,28 @@ namespace App;
  */
 class ShipStation
 {
+    protected $header;
 
     /****************************************************
      * RELATIONSHIPS
      ****************************************************/
-
     public function hasControlPadOrder($order_id)
     {
         //TODO: Call get function in ControlPadDataModel
     }
 
-    /***************************************************
-     * VALIDATION
-     ***************************************************/
-
-    public function rules(){}
-
     /****************************************************
      * MUTATORS
      ****************************************************/
-
     public function generateRawAuthenticationToken()
     {
-        return env('SHIPSTATION_API_KEY') . ":" . env('SHIPSTATION_API_SECRET');
+        if(env('APP_DEBUG') === true){
+            return config('sscp.SS_DEV_PUBLIC_KEY') . ":" . config('sscp.SS_DEV_PRIVATE_KEY');
+        }else{
+            return "";
+            //TODO:: Figure out where user credentials are coming from.
+            //return Auth::user()->ss_public_key . ':' . Auth::user()->ss_private_key;
+        }
     }
 
     public function encryptRawAuthenticationToken(string $rawToken)
@@ -43,9 +43,31 @@ class ShipStation
         return base64_encode($rawToken);
     }
 
-    public function generateAuthorizationHeader(string $encryptedToken)
+    public function generateAuthorizationToken()
     {
-        return 'Authorization: Basic ' . $encryptedToken;
+        return $this->encryptRawAuthenticationToken($this->generateRawAuthenticationToken());
     }
+
+    public function buildHeader()
+    {
+        return [
+            'Authorization' => 'Basic ' . $this->generateAuthorizationToken(),
+            'Content-Type' => 'application/json'
+        ];
+    }
+
+    /****************************************************
+     * ACCESSORS
+     ****************************************************/
+    public function getHeader()
+    {
+        return $this->buildHeader();
+        //return $this->header;
+    }
+
+    /***************************************************
+     * VALIDATION
+     ***************************************************/
+    public function rules(){}
 
 }

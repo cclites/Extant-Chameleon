@@ -2,6 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\ControlPad;
+use App\Shipstation;
+use App\DataModels\ControlPadDataModel;
+use App\DataModels\ShipStationDataModel;
+
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class ControlPanelToShipStation extends Command
@@ -11,7 +17,7 @@ class ControlPanelToShipStation extends Command
      *
      * @var string
      */
-    protected $signature = 'ccsp:start';
+    protected $signature = 'sscp:start';
 
     /**
      * The console command description.
@@ -37,6 +43,50 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
+        //GETTING ORDERS FROM CONTROLPAD
+        if(env('APP_DEBUG') === true){
+            $baseUrl = config('sscp.CP_DEV_BASE_PATH');
+            $apiKey = config('sscp.CP_DEV_API_KEY');
+        }else{
+            $baseUrl = config('sscp.CP_BASE_PATH');
+            $apiKey = config('sscp.CP_API_KEY');
+        }
+
+        $startDate = Carbon::yesterday()->subMonth()->startOfDay();
+        $endDate = Carbon::today()->endOfDay();
+
+        $controlPad = new ControlPadDataModel($baseUrl, $apiKey, $startDate, $endDate);
+        $orders = $controlPad->get();
+
+        $ids = collect($orders->data)->map(function ($order){
+            return $order->id;
+        })->toArray();
+
+        // TODO::
+        //  Unused for now. Will be used to verify orders once I know what
+        //  happens with ShipStation if a single order fails out of multiple
+        //  orders.
+        $ordersMap = collect($orders->data)->map(function($order){
+            return [ $order->receipt_id => [
+               'id' => $order->id
+            ]];
+        });
+
+        $shipStation = new ShipStationDataModel();
+        $transformedOrders = $shipStation->formatOrders($orders->data);
+
+        //TODO:: What happens when one fails out of a bunch of records?
+
+        $request = $shipStation->post($transformedOrders);
+
+        echo "\n\n" . json_encode($request) . "\n";
+
+        //die();
+
+        //***********************  UPDATE CP Orders
+        $response = $controlPad->patch($ids);
+
+        echo "\n\n" . json_encode($response) . "\n";
 
     }
 }

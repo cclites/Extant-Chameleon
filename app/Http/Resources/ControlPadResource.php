@@ -7,53 +7,39 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ControlPadResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($order)
+    {
+        if(is_array($order)){
+            return  $order;
+        }
+
+        return $order->toArray();
+    }
+
+    public static function transformCPAddressToSSAddress($cpAddress)
     {
         return [
-            //TODO - map $request to a ControlPad order
+            'name' => $cpAddress->name,
+            'street1' => $cpAddress->line_1,
+            'street2' => $cpAddress->line_2,
+            'city' => $cpAddress->city,
+            'state' => $cpAddress->state,
+            'postalCode' => $cpAddress->zip,
+            'country' => 'US' //TODO: If users from other countries come on board, this will
+                              //  need to be changed to a variable.
+        ];
+    }
+
+    public static function transformCPOrderToSSOrder($order)
+    {
+        return [
+            'orderNumber' => $order->pid,
+            'orderKey' => $order->receipt_id,
+            'orderDate' => $order->created_at,
+            'orderStatus' => 'awaiting_shipment',
+            'billTo' => self::transformCPAddressToSSAddress($order->billing_address),
+            'shipTo' => self::transformCPAddressToSSAddress($order->shipping_address),
+            'customerUsername' => $order->buyer_first_name . " " . $order->buyer_last_name,
         ];
     }
 }
-
-/*
- *     "data": [
-        {
-            "id": 7,
-            "receipt_id": "SQG5QA-7",
-            "type_id": 3,
-            "type_description": "Rep to Customer",
-            "buyer_first_name": "Juliet",
-            "buyer_last_name": "Goodwin",
-            "buyer_email": "schultz.tomas@example.org",
-            "seller_id": 106,
-            "buyer_id": 2015,
-            "total_price": 50.23,
-            "subtotal_price": 34.63,
-            "total_discount": 0,
-            "total_shipping": 13,
-            "total_tax": 2.6,
-            "cash": 0,
-            "source": "ios",
-            "paid_at": null,
-            "status": "fulfilled",
-            "created_at": "2018-01-08 21:38:59",
-            "updated_at": "2018-02-08 20:00:45",
-            "billing_address": {
-                "name": "Juliet Goodwin",
-                "line_1": "6777 Padberg Corner",
-                "line_2": "Apt. 377",
-                "city": "New Roger",
-                "zip": "09310-0933",
-                "state": "HI"
-            },
-            "shipping_address": {
-                "name": "Juliet Goodwin",
-                "line_1": "6777 Padberg Corner",
-                "line_2": "Apt. 377",
-                "city": "New Roger",
-                "zip": "09310-0933",
-                "state": "HI"
-            }
-        }
-    ],
- */
