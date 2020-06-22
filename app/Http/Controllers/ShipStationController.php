@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class ShipStationController extends BaseController
 {
     /**
@@ -15,7 +17,7 @@ class ShipStationController extends BaseController
         //$this->middleware('auth');
     }
 
-    public function update(){
-        //TODO: Dispatch update data to UpdateControlPanelOrders
+    public function notifyShipped(Request $request){
+
     }
 }

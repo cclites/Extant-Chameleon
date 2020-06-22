@@ -5,7 +5,7 @@ namespace App\DataModels;
 use App\ControlPad;
 use Carbon\Carbon;
 use GuzzleHttp\Client as Client;
-use GuzzleHttp\Psr7\Request;
+//use GuzzleHttp\Psr7\Request;
 
 /**
  * Class ControlPadDataModel
@@ -63,64 +63,51 @@ class ControlPadDataModel
 
     public function patch(array $ids, ?string $status = 'pending')
     {
-        if(env('APP_DEBUG') === true){
-            $debug = true;
-        }
+
+        echo "\nPATCHING\n\n";
+        echo "IDS: " . json_encode($ids) . "\n";
 
         if(env('APP_DEBUG') === true){
             $apiKey = config('sscp.CP_DEV_API_KEY');
+            $basePath = config('sscp.CP_DEV_BASE_PATH');
         }else{
             $apiKey = config('sscp.CP_API_KEY');
+            $basePath = null;
         }
 
-        //$client = new Client();
-
-        $header = $this->controlPad->getHeader();
-
-        //echo "\n\n" . $header . "\n";
-
-        /*
-        //$request = new Request('PATCH', config('sscp.CP_DEV_BASE_PATH') . "/orders", $header, ['status' => 'pending', 'ids' => $ids]);
-        $request = new Request('PATCH',
-                        config('sscp.CP_DEV_BASE_PATH') . "/orders",
-                        [
-                            'header' => [
-                                'Content-Type' => 'application/json',
-                                'APIKey' => $apiKey
-                            ],
-                            'body' => [
-                                'status' => "pending",
-                                'ids' => $ids
-                            ]
-                        ]);
-
-        return json_decode($request->getBody()->getContents());
-        */
         $client = new Client([
-            'headers' => $header,
-            'base_uri' => config('sscp.CP_DEV_BASE_PATH') . '/orders',
-            'json' => [
-                'status' => "pending",
-                'ids' => $ids
-            ]
+            'base_uri' => $basePath,
         ]);
 
-        $response = $client->request('PATCH');
+        $headers = $this->controlPad->getHeader();
 
-        /*
-        $client = new Client();
+        foreach ($ids as $id){
 
-        $response = $client->request(
-            'PATCH',
-            $this->baseUrl.'/orders',
-            [
-                'headers' => $header,
-                'status' => $status,
-                'ids' => $ids
-            ]
-        );*/
+            $client->request(
+                'PATCH',
+                '/orders/' . $id,
+                [
+                    //'debug' => env('APP_DEBUG'),
+                    'json' => [
+                        'status' => $status,
+                        'ids' => $ids
+                    ],
+                    'headers' => $headers
+                ]
+            );
 
-        return json_decode($response->getBody()->getContents());
+            $fullUrl = $basePath . '/orders/' . $id . '?orderlines=1&tracking=1';
+
+            $client->request(
+                'GET',
+                $fullUrl,
+                [
+                    'headers' => $headers,
+                    'debug' => env('APP_DEBUG'),
+                ]
+            );
+        }
+
     }
 
     public function isLive()

@@ -52,11 +52,19 @@ class ControlPanelToShipStation extends Command
             $apiKey = config('sscp.CP_API_KEY');
         }
 
-        $startDate = Carbon::yesterday()->subMonth()->startOfDay();
+        $startDate = Carbon::yesterday()->subMonths(2)->startOfDay();
         $endDate = Carbon::today()->endOfDay();
 
         $controlPad = new ControlPadDataModel($baseUrl, $apiKey, $startDate, $endDate);
         $orders = $controlPad->get();
+
+        if(!$orders){
+            echo "\nNo Orders to process.";
+            die();
+        }else{
+            echo "\nOrders are: \n";
+            echo "\n\n" . json_encode($orders) . "\n";
+        }
 
         $ids = collect($orders->data)->map(function ($order){
             return $order->id;
@@ -77,16 +85,9 @@ class ControlPanelToShipStation extends Command
 
         //TODO:: What happens when one fails out of a bunch of records?
 
-        $request = $shipStation->post($transformedOrders);
-
-        echo "\n\n" . json_encode($request) . "\n";
-
-        //die();
+        $shipStation->post($transformedOrders);
 
         //***********************  UPDATE CP Orders
-        $response = $controlPad->patch($ids);
-
-        echo "\n\n" . json_encode($response) . "\n";
-
+        $controlPad->patch($ids);
     }
 }
