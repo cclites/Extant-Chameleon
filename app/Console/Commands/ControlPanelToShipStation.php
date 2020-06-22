@@ -2,35 +2,56 @@
 
 namespace App\Console\Commands;
 
-use App\ControlPad;
-use App\Shipstation;
+use Illuminate\Console\Command;
+use Carbon\Carbon;
+
 use App\DataModels\ControlPadDataModel;
 use App\DataModels\ShipStationDataModel;
 
-use Carbon\Carbon;
-use Illuminate\Console\Command;
-
+/**
+ * Class ControlPanelToShipStation
+ *
+ * Cron job to pull unfulfilled orders from ControlPad,
+ * inserts then orders into ShipStation, and then
+ * updates the ControlPad order
+ *
+ * @package App\Console\Commands
+ */
 class ControlPanelToShipStation extends Command
 {
-
+    /**
+     * @var Carbon
+     */
     public $startDate;
 
+    /**
+     * @var Carbon
+     */
     public $endDate;
 
+    /**
+     * @var ControlPadDataModel
+     */
     public $controlPad;
+
+    /**
+     * @var ShipStationDataModel
+     */
+    public $shipStation;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sscp:start';
+    protected $signature = 'cron:process-cp-to-ss';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Starts process that grabs unprocessed orders from ControlPad and inserts them into ShipStation';
+    protected $description = 'Starts process that grabs unfulfilled orders from ControlPad and inserts them into ShipStation';
 
     /**
      * Create a new command instance.
@@ -39,14 +60,12 @@ class ControlPanelToShipStation extends Command
      */
     public function __construct()
     {
-
-        echo "\nCalled the Constructor\n";
-
         parent::__construct();
 
         $this->startDate = Carbon::yesterday()->subMonth()->startOfDay();
         $this->endDate = Carbon::now();
         $this->controlPad = new ControlPadDataModel($this->startDate, $this->endDate);
+        $this->shipStation = new ShipStationDataModel();
     }
 
     /**
@@ -56,9 +75,9 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
-        echo "Handle the job\n";
-
-        //Get unfulfilled orders from control pad
+        //**************************************************
+        // 1. Get unfulfilled orders from ControlPad
+        //**************************************************
         $orders = $this->controlPad->get();
 
         if(!$orders->data){
@@ -69,6 +88,9 @@ class ControlPanelToShipStation extends Command
 
         echo "Retrieved orders\n";
 
+        //**************************************************
+        // 2. Build an array of CP order ids
+        //**************************************************
         $ids = collect($orders->data)->map(function ($order){
             return $order->id;
         })->toArray();
@@ -81,8 +103,10 @@ class ControlPanelToShipStation extends Command
 
         echo "Id array is populated.\n";
 
-        $shipStation = new ShipStationDataModel();
-        $transformedOrders = $shipStation->formatOrders($orders->data);
+        //**************************************************
+        // 3. Convert CP Order data to SS order data
+        //**************************************************
+        $transformedOrders = $this->shipStation->formatOrders($orders->data);
 
         if(!$transformedOrders){
             echo "Unable to process transformed orders.\n";
@@ -90,19 +114,22 @@ class ControlPanelToShipStation extends Command
             return false;
         }
 
-        \Log::info("Have transformed orders");
+        //**************************************************
+        // 4. Post orders to ShipStation
+        //**************************************************
+        $response = $this->shipStation->post($transformedOrders);
 
-        $response = $shipStation->post($transformedOrders);
-
-        echo "\nSHIPSTATION RESPONSE: \n" . json_encode($response) . "\n\n";
-
-        /*
-        if($response-){
-            \Log::error("Unable to process transformed orders.");
+        if(!$response){
+            echo "No response when posting orders to ShipStation.\n";
+            \Log::error("No response when posting orders to ShipStation.");
             return false;
-        }*/
+        }
 
-        //***********************  UPDATE CP Orders
+        //**************************************************
+        // 5. Update ControlPad orders
+        //**************************************************
         $this->controlPad->patch($ids);
+
+        return true;
     }
 }

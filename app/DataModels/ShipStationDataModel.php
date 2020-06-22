@@ -51,9 +51,14 @@ class ShipStationDataModel extends BaseDataModel
         return json_decode($request->getBody()->getContents());
     }
 
+    public function addUser($data){
+        //TODO:: Will need to add route to controller
+    }
+
     public function update()
     {
         //TODO: Add API call to update ShipStation orders and handle response
+        //  Might need this for testing
     }
 
     public function isLive()

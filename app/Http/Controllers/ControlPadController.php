@@ -14,5 +14,8 @@ class ControlPadController extends BaseController
         //
     }
 
-    //
+    public function report(Request $request)
+    {
+        //query for CP records within a date range
+    }
 }

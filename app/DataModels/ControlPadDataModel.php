@@ -84,6 +84,10 @@ class ControlPadDataModel extends BaseDataModel
         }
     }
 
+    public function post(){
+
+    }
+
     public function isLive()
     {
         //TODO: figure out a way to query ShipStation to see if it is alive

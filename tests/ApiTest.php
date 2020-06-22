@@ -11,7 +11,6 @@ use App\Libraries\AddressFactory;
 
 class ApiTest extends TestCase
 {
-
     public $endpoint = 'https://ssapi.shipstation.com/';
 
     public $header;
