@@ -11,23 +11,32 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Http;
 
-class ShipStationDataModel
+/**
+ * Class ShipStationDataModel
+ * @package App\DataModels
+ *
+ * NOTE: ShipStationDataModel is not a model representing a collection,
+ *       but rather a representation of a ShipStation order.
+ *
+ *       This file contains API calls for ShipStationDataModel orders.
+ *
+ * @function post (add SS orders)
+ */
+class ShipStationDataModel extends BaseDataModel
 {
     public $maxAllowedRequests;
     public $remainingRequests;
     public $secondsUntilReset;
+    public $shipStation;
+    public $headers;
 
-    /**
-     * Class ShipStationDataModel
-     * @package App\DataModels
-     *
-     * NOTE: ShipStationDataModel is not a model representing a collection,
-     *       but rather a representation of a ShipStation order.
-     *
-     *       This file contains API calls for ShipStationDataModel orders.
-     *
-     * @function post (add SS orders)
-     */
+    public function __construct()
+    {
+        parent::boot();
+
+        $this->shipStation = new ShipStation();
+        $this->headers = $this->shipStation->getHeader();
+    }
 
     public function get()
     {
@@ -36,20 +45,8 @@ class ShipStationDataModel
 
     public function post($orders)
     {
-        if(!$orders){
-            echo "\nNo orders to post\n";
-            die();
-        }
-
-        $debug = false;
-        $shipStation = new ShipStation();
-        $headers = $shipStation->getHeader();
-
-        if(env('APP_DEBUG') === true){
-            $debug = true;
-        }
-
-        $request = new Request('POST', config('sscp.CP_DEV_BASE_PATH'), $headers, $orders);
+        $request = new Request('POST', config('sscp.CP_DEV_BASE_PATH'), $this->headers, $orders);
+        $this->sleepIfRateLimited($request);
 
         return json_decode($request->getBody()->getContents());
     }

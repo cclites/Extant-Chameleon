@@ -12,6 +12,12 @@ use Illuminate\Console\Command;
 
 class ControlPanelToShipStation extends Command
 {
+
+    public $startDate;
+
+    public $endDate;
+
+    public $controlPad;
     /**
      * The name and signature of the console command.
      *
@@ -33,7 +39,14 @@ class ControlPanelToShipStation extends Command
      */
     public function __construct()
     {
+
+        echo "\nCalled the Constructor\n";
+
         parent::__construct();
+
+        $this->startDate = Carbon::yesterday()->subMonth()->startOfDay();
+        $this->endDate = Carbon::now();
+        $this->controlPad = new ControlPadDataModel($this->startDate, $this->endDate);
     }
 
     /**
@@ -43,51 +56,53 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
-        //GETTING ORDERS FROM CONTROLPAD
-        if(env('APP_DEBUG') === true){
-            $baseUrl = config('sscp.CP_DEV_BASE_PATH');
-            $apiKey = config('sscp.CP_DEV_API_KEY');
-        }else{
-            $baseUrl = config('sscp.CP_BASE_PATH');
-            $apiKey = config('sscp.CP_API_KEY');
+        echo "Handle the job\n";
+
+        //Get unfulfilled orders from control pad
+        $orders = $this->controlPad->get();
+
+        if(!$orders->data){
+            echo "There are no orders to update\n";
+            \Log::error("There are no orders to update.");
+            return false;
         }
 
-        $startDate = Carbon::yesterday()->subMonths(2)->startOfDay();
-        $endDate = Carbon::today()->endOfDay();
-
-        $controlPad = new ControlPadDataModel($baseUrl, $apiKey, $startDate, $endDate);
-        $orders = $controlPad->get();
-
-        if(!$orders){
-            echo "\nNo Orders to process.";
-            die();
-        }else{
-            echo "\nOrders are: \n";
-            echo "\n\n" . json_encode($orders) . "\n";
-        }
+        echo "Retrieved orders\n";
 
         $ids = collect($orders->data)->map(function ($order){
             return $order->id;
         })->toArray();
 
-        // TODO::
-        //  Unused for now. Will be used to verify orders once I know what
-        //  happens with ShipStation if a single order fails out of multiple
-        //  orders.
-        $ordersMap = collect($orders->data)->map(function($order){
-            return [ $order->receipt_id => [
-               'id' => $order->id
-            ]];
-        });
+        if(!count($ids)){
+            echo "Unable to pull id from data.\n";
+            \Log::error("Unable to pull id from data.");
+            return false;
+        }
+
+        echo "Id array is populated.\n";
 
         $shipStation = new ShipStationDataModel();
         $transformedOrders = $shipStation->formatOrders($orders->data);
 
-        //TODO:: What happens when one fails out of a bunch of records?
+        if(!$transformedOrders){
+            echo "Unable to process transformed orders.\n";
+            \Log::error("Unable to process transformed orders.");
+            return false;
+        }
 
-        $shipStation->post($transformedOrders);
+        \Log::info("Have transformed orders");
+
+        $response = $shipStation->post($transformedOrders);
+
+        echo "\nSHIPSTATION RESPONSE: \n" . json_encode($response) . "\n\n";
+
+        /*
+        if($response-){
+            \Log::error("Unable to process transformed orders.");
+            return false;
+        }*/
 
         //***********************  UPDATE CP Orders
-        $controlPad->patch($ids);
+        $this->controlPad->patch($ids);
     }
 }

@@ -19,42 +19,40 @@ use GuzzleHttp\Client as Client;
  * @function get (get CP orders)
  * @function path (update CP orders)
  */
-class ControlPadDataModel
+class ControlPadDataModel extends BaseDataModel
 {
-    public $baseUrl;
-    public $apiKey;
     public $startDate;
     public $endDate;
     public $controlPad;
 
-    public function __construct(string $baseUrl, string $apiKey, ?Carbon $startDate, ?Carbon $endDate)
+    public function __construct(?Carbon $startDate, ?Carbon $endDate)
     {
-        $this->baseUrl = $baseUrl;
-        $this->apiKey = $apiKey;
+        parent::boot();
+
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
     }
 
-    public function get()
+    public function get(string $status = ControlPad::DEFAULT_STATUS)
     {
-        $fullUrl = $this->baseUrl .
-                    '/orders?per_page=3&start_date=' .
+        $fullUrl = $this->CpBasePath .
+                    '/orders?start_date=' .
                     $this->startDate .
                     '&end_date=' .
                     $this->endDate .
                     '&status=' .
-                    ControlPad::DEFAULT_STATUS;
+                    $status;
 
         $client = new Client();
 
-        $header = $this->controlPad->getHeader();
+        $headers = $this->controlPad->getHeader();
 
         $response = $client->request(
             'GET',
             $fullUrl,
             [
-                'headers' => $header
+                'headers' => $headers
             ]
         );
 
@@ -63,20 +61,8 @@ class ControlPadDataModel
 
     public function patch(array $ids, ?string $status = 'pending')
     {
-
-        echo "\nPATCHING\n\n";
-        echo "IDS: " . json_encode($ids) . "\n";
-
-        if(env('APP_DEBUG') === true){
-            $apiKey = config('sscp.CP_DEV_API_KEY');
-            $basePath = config('sscp.CP_DEV_BASE_PATH');
-        }else{
-            $apiKey = config('sscp.CP_API_KEY');
-            $basePath = null;
-        }
-
         $client = new Client([
-            'base_uri' => $basePath,
+            'base_uri' => $this->CpBasePath,
         ]);
 
         $headers = $this->controlPad->getHeader();
@@ -95,19 +81,7 @@ class ControlPadDataModel
                     'headers' => $headers
                 ]
             );
-
-            $fullUrl = $basePath . '/orders/' . $id . '?orderlines=1&tracking=1';
-
-            $client->request(
-                'GET',
-                $fullUrl,
-                [
-                    'headers' => $headers,
-                    'debug' => env('APP_DEBUG'),
-                ]
-            );
         }
-
     }
 
     public function isLive()

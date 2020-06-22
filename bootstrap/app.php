@@ -61,6 +61,7 @@ $app->singleton(
 
 $app->configure('sscp');
 $app->configure('database');
+$app->configure('logging');
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +96,8 @@ $app->configure('database');
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+    $app->register(Rollbar\Laravel\RollbarServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
