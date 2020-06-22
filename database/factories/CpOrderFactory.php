@@ -16,13 +16,15 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(Order::class, function (Faker $faker) {
-
+$factory->define(Order::class, function (Faker $faker)
+{
     return [
-        'orderNumber' => $faker->randomNumber(12),
-        'orderDate' => \Carbon\Carbon::now()->format('m/d/Y'),
-        'orderStatus' => $faker->randomElement(['awaiting_payment', 'awaiting_shipment', 'shipped', 'on_hold', 'cancelled']),
-        'billTo' => $faker->address,
-        'shipTo' => $faker->address
+        "receipt_id" => $faker->randomLetter . "-" . $faker->randomNumber(4),
+        'buyer_first_name' => $faker->firstName,
+        'buyer_last_name'=> $faker->lastName,
+        'status' => 'unfulfilled',
+        'created_at' => \Carbon\Carbon::now(),
+        'billing_address' => AddressFactory::cpCreate(),
+        'shipping_address' => AddressFactory::cpCreate(),
     ];
 });
