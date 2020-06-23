@@ -45,8 +45,8 @@ class ShipStationDataModel extends BaseDataModel
 
     public function post($orders)
     {
-        $request = new Request('POST', config('sscp.CP_DEV_BASE_PATH'), $this->headers, $orders);
-        $this->sleepIfRateLimited($request);
+        $request = new Request('POST', $this->SsBasePath, $this->headers, $orders);
+        //$this->sleepIfRateLimited($request);
 
         return json_decode($request->getBody()->getContents());
     }
@@ -69,7 +69,7 @@ class ShipStationDataModel extends BaseDataModel
     }
 
     //Generate an array of orders and wrap in a SS create-order request
-    public function formatOrders($orders)
+    public function formatOrders(array $orders)
     {
         return collect($orders)->map(function($order){
             return ControlPadResource::transformCPOrderToSSOrder($order);

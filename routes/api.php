@@ -1,9 +1,13 @@
 <?php
 
+/***************************************************************************
+ * PUBLIC ROUTES
+ ***************************************************************************/
 Route::post('api/shipstation/notify-shipped', 'ShipStationController@notifyShipped');
 
-/*
-Route::post('api/shipstation/register-user', 'ShipStationController@registerUser');
-Route::get('api/shipstation/reports', 'ShipStationController@report');
-Route::get('api/controlpad/reports', 'ControlPadController@report');
-*/
+/***************************************************************************
+ * DIAGNOSTIC REPORTS
+ ***************************************************************************/
+Route::post('api/shipstation/report', 'ShipStationController@report');
+Route::post('api/controlpad/report', 'ControlPadController@report');
+

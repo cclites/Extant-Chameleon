@@ -1,10 +1,8 @@
 <?php
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-
-use App\Address;
 use Faker\Factory;
-//use Faker\Generator as Faker;
+
 
 class AddressFactory{
 
@@ -18,7 +16,8 @@ class AddressFactory{
             'street2'=> $faker->secondaryAddress,
             'city'=> $faker->city,
             'state'=>$faker->state,
-            'zip' => $faker->postcode,
+            'postalCode' => $faker->postcode,
+            'country' => 'US'
         ];
 
     }

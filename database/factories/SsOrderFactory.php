@@ -1,29 +1,28 @@
 <?php
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
+use Faker\Factory;
 
-use App\Order;
-use Faker\Generator as Faker;
+class SsOrderFactory{
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
-*/
+    /*
+     * Valid values for orderStatus:
+     * awaiting_payment, awaiting_shipment, shipped, on_hold, cancelled
+     *
+     * https://www.shipstation.com/docs/api/orders/create-update-order/
+     */
 
-$factory->define(Order::class, function (Faker $faker) {
+    public static function create()
+    {
+        $faker = Factory::create();
 
-    return [
-        'orderKey' => $faker->randomLetter . "-" . $faker->randomNumber(4),
-        'orderNumber' => $faker->randomNumber(12),
-        'orderDate' => \Carbon\Carbon::now()->format('m/d/Y'),
-        'orderStatus' => 'pending',
-        'billTo' => AddressFactory::ssCreate(),
-        'shipTo' => AddressFactory::ssCreate(),
-    ];
-});
+        return [
+            'orderKey' => $faker->randomLetter . "-" . $faker->randomNumber(4),
+            'orderNumber' => $faker->randomNumber(3),
+            'orderDate' => \Carbon\Carbon::now()->format('m/d/Y'),
+            'orderStatus' => 'awaiting_shipment',
+            'billTo' => AddressFactory::ssCreate(),
+            'shipTo' => AddressFactory::ssCreate(),
+        ];
+    }
+}

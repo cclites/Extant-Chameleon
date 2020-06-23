@@ -24,6 +24,8 @@ class ControlPadDataModel extends BaseDataModel
     public $startDate;
     public $endDate;
     public $controlPad;
+    public $headers;
+    public $client;
 
     public function __construct(?Carbon $startDate, ?Carbon $endDate)
     {
@@ -32,6 +34,8 @@ class ControlPadDataModel extends BaseDataModel
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
+        $this->headers = $this->controlPad->getHeader();
+        $this->client = new Client();
     }
 
     public function get(string $status = ControlPad::DEFAULT_STATUS)
@@ -44,15 +48,11 @@ class ControlPadDataModel extends BaseDataModel
                     '&status=' .
                     $status;
 
-        $client = new Client();
-
-        $headers = $this->controlPad->getHeader();
-
-        $response = $client->request(
+        $response = $this->client->request(
             'GET',
             $fullUrl,
             [
-                'headers' => $headers
+                'headers' => $this->headers
             ]
         );
 
@@ -61,31 +61,22 @@ class ControlPadDataModel extends BaseDataModel
 
     public function patch(array $ids, ?string $status = 'pending')
     {
-        $client = new Client([
-            'base_uri' => $this->CpBasePath,
-        ]);
-
-        $headers = $this->controlPad->getHeader();
 
         foreach ($ids as $id){
 
-            $client->request(
+            $this->client->request(
                 'PATCH',
-                '/orders/' . $id,
+                $this->CpBasePath . '/orders/' . $id,
                 [
-                    //'debug' => env('APP_DEBUG'),
+                    'debug' => env('APP_DEBUG'),
                     'json' => [
                         'status' => $status,
                         'ids' => $ids
                     ],
-                    'headers' => $headers
+                    'headers' => $this->headers
                 ]
             );
         }
-    }
-
-    public function post(){
-
     }
 
     public function isLive()

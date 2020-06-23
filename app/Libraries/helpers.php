@@ -10,6 +10,26 @@ if ( ! function_exists('config_path'))
      */
     function config_path($path = '')
     {
-        return app()->basePath() . '/config' . ($path ? '/' . $path : $path);
+        $p =  app()->basePath() . '/config' . ($path ? '/' . $path : $path);
+        echo "\n\nConfig path is:  $p\n";
+
+        return $p;
+    }
+}
+
+if ( ! function_exists('app_path'))
+{
+    /**
+     * Get the app path.
+     *
+     * @param  string $path
+     * @return string
+     */
+    function app_path($path = '')
+    {
+        $p = app()->basePath() . '/app' . ($path ? '/' . $path : $path);
+        echo "\n\nApp path is:  $p\n";
+
+        return $p;
     }
 }
