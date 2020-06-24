@@ -5,7 +5,6 @@ namespace App\DataModels;
 use App\ControlPad;
 use Carbon\Carbon;
 use GuzzleHttp\Client as Client;
-//use GuzzleHttp\Psr7\Request;
 
 /**
  * Class ControlPadDataModel
@@ -46,7 +45,8 @@ class ControlPadDataModel extends BaseDataModel
                     '&end_date=' .
                     $this->endDate .
                     '&status=' .
-                    $status;
+                    $status .
+                    '&orderlines=1';
 
         $response = $this->client->request(
             'GET',
@@ -61,7 +61,6 @@ class ControlPadDataModel extends BaseDataModel
 
     public function patch(array $ids, ?string $status = 'pending')
     {
-
         foreach ($ids as $id){
 
             $result = $this->client->request(

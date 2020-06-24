@@ -43,7 +43,6 @@ class ControlPadTest extends TestCase
 
     public function testCanUpdateTestCpOrder(): void
     {
-
         $orders = $this->controlPad->get('pending');
         $orderData = collect($orders->data)->first();
 

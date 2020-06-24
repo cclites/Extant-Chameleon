@@ -62,12 +62,14 @@ class ShipStation
     public function getHeader()
     {
         return $this->buildHeader();
-        //return $this->header;
     }
 
     /***************************************************
      * VALIDATION
      ***************************************************/
-    public function rules(){}
+    public static $readRules = [
+        'title' => 'required|unique:posts|max:255',
+        'body' => 'required',
+    ];
 
 }

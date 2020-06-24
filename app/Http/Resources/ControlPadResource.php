@@ -16,7 +16,7 @@ class ControlPadResource extends JsonResource
         return $order->toArray();
     }
 
-    public static function transformCPAddressToSSAddress($cpAddress, $customerName)
+    public static function transformCPAddressToSSAddress(array $cpAddress, string $customerName): array
     {
         return [
             'name' => $customerName,
@@ -30,17 +30,29 @@ class ControlPadResource extends JsonResource
         ];
     }
 
-    public static function transformCPOrderToSSOrder($order)
+    public static function transformCPOrderToSSOrder( array $order): array
     {
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
         return [
+            'orderNumber' => $order['id'],
             'orderKey' => $order['receipt_id'],
             'orderDate' => $order['created_at'],
             'orderStatus' => 'awaiting_shipment',
+            'orderTotal' => $order['total_price'],
+            'taxAmount' => $order['total_tax'],
+            'amountPaid' => 0, //TODO:: Figure out which parameter to use here
+            'shippingAmount' => $order['total_shipping'],
             'billTo' => self::transformCPAddressToSSAddress($order['billing_address'], $customerUserName),
             'shipTo' => self::transformCPAddressToSSAddress($order['shipping_address'], $customerUserName),
             'customerUsername' => $customerUserName,
+        ];
+    }
+
+    public static function transformCPOrderItemToSSOrderItem($orderItem){
+
+        return [
+            //
         ];
 
     }

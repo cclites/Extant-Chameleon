@@ -19,7 +19,8 @@ class ShipStationController extends BaseController
 
     public function notifyShipped(Request $request)
     {
-
+        \Log::info("NOTIFY SHIPPED");
+        \Log::info(json_encode($request->all()));
     }
 
     public function report(Request $request)
