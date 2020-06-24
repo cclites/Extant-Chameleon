@@ -14,39 +14,54 @@ use App\Libraries\AddressFactory;
 
 class ControlPadTest extends TestCase
 {
+    public $startDate;
+    public $endDate;
+    public $controlPad;
+    public $shipStation;
+
     public function setUp() : void
     {
-        $this->startDate = Carbon::yesterday()->subMonth()->startOfDay();
+        parent::Setup();
+
+        $this->startDate = Carbon::yesterday()->subMonths(2)->startOfDay();
         $this->endDate = Carbon::now();
         $this->controlPad = new ControlPadDataModel($this->startDate, $this->endDate);
         $this->shipStation = new ShipStationDataModel();
     }
 
-    public function testCanGetTestCpOrder(){
+    public function testCanGetTestCpOrders()
+    {
+        $orders = $this->controlPad->get('pending');
+        $pass = false;
 
-        //Pull as single order from ControlPad dev DB.
+        if( count($orders->data) > 0 ){
+            $pass = true;
+        }
 
-        //If can get it, assert true
-
+        $this->assertTrue($pass);
     }
 
+    public function testCanUpdateTestCpOrder(): void
+    {
 
+        $orders = $this->controlPad->get('pending');
+        $orderData = collect($orders->data)->first();
 
-    /*
-    public function testCanUpdateTestCpOrder(){
+        $orderId = $orderData->id;
+        $pass = false;
 
-    }
+        $response = $this->controlPad->patch([$orderId], 'unfulfilled');
 
-    public function testCanGetTestCpOrder(){
+        if($response){
+            $pass = true;
+        }
 
-    }
+        $this->assertTrue($pass);
 
-    public function testCanDeleteOrder(){
-
+        $this->controlPad->patch([$orderId], 'pending');
     }
 
     public function tearDown(): void
     {
     }
-*/
 }

@@ -64,7 +64,7 @@ class ControlPadDataModel extends BaseDataModel
 
         foreach ($ids as $id){
 
-            $this->client->request(
+            $result = $this->client->request(
                 'PATCH',
                 $this->CpBasePath . '/orders/' . $id,
                 [
@@ -77,6 +77,8 @@ class ControlPadDataModel extends BaseDataModel
                 ]
             );
         }
+
+        return true;
     }
 
     public function isLive()
