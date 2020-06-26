@@ -19,8 +19,17 @@ class ShipStationController extends BaseController
 
     public function notifyShipped(Request $request)
     {
+        //1. Format request so responses can be iterated
+
+        //2. Get order from CP - update status
+
+        //3. Create tracking order
+
+
         \Log::info("NOTIFY SHIPPED");
         \Log::info(json_encode($request->all()));
+
+        return response()->json(['message' => 'Notify shipped']);
     }
 
     public function report(Request $request)

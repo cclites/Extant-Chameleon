@@ -11,6 +11,9 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+use Illuminate\Http\Request;
+
+/***************************************************************************
+ * PUBLIC ROUTES
+ ***************************************************************************/
+Route::post('shipstation/notify-shipped', 'ShipStationController@notifyShipped');

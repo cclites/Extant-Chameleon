@@ -10,7 +10,11 @@ class CpOrderFactory{
         $faker = Factory::create();
 
         return [
-            "receipt_id" => $faker->randomLetter . "-" . $faker->randomNumber(4),
+            'id' => $faker->randomNumber(2),
+            'total_price' => 55.55,
+            'total_tax' => 5.55,
+            'total_shipping' => 555.55,
+            'receipt_id' => $faker->randomLetter . "-" . $faker->randomNumber(4),
             'buyer_first_name' => $faker->firstName,
             'buyer_last_name'=> $faker->lastName,
             'status' => 'unfulfilled',

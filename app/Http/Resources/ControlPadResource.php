@@ -34,8 +34,12 @@ class ControlPadResource extends JsonResource
     {
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
+        $items = $order['lines']->map(function($line){
+            return self::transformCPOrderItemToSSOrderItem($line);
+        });
+
         return [
-            'orderNumber' => $order['id'],
+            'orderNumber' => $order['id'], //There has to be. It just wasn't in my data. Pull an order from CP and see what it looks like.
             'orderKey' => $order['receipt_id'],
             'orderDate' => $order['created_at'],
             'orderStatus' => 'awaiting_shipment',
@@ -46,13 +50,23 @@ class ControlPadResource extends JsonResource
             'billTo' => self::transformCPAddressToSSAddress($order['billing_address'], $customerUserName),
             'shipTo' => self::transformCPAddressToSSAddress($order['shipping_address'], $customerUserName),
             'customerUsername' => $customerUserName,
+            'items' => $items
         ];
     }
 
-    public static function transformCPOrderItemToSSOrderItem($orderItem){
+    public static function transformCPOrderItemToSSOrderItem($order, $orderItem){
+
+        echo "\n" . json_encode($order) . "\n";
 
         return [
-            //
+            'lineItemKey' => $orderItem->id,
+            'sku' => $orderItem->manufacturer_sku,
+            'name' => $orderItem->name,
+            'quantity' => $orderItem->quantity,
+            'unitPrice' => $orderItem->price,
+            //'taxAmount' => $orderItem->total_tax,
+            //'shippingAmount' => $orderItem->total_shipping,
+            'createDate' => $orderItem->created_at,
         ];
 
     }
