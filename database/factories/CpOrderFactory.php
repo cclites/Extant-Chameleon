@@ -21,6 +21,7 @@ class CpOrderFactory{
             'created_at' => \Carbon\Carbon::now(),
             'billing_address' => AddressFactory::cpCreate(),
             'shipping_address' => AddressFactory::cpCreate(),
+            'items' => [],
         ];
     }
 

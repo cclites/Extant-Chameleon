@@ -1,9 +1,7 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
-    "license": "MIT",
-    "type": "project",
+    "name": "controlpad/sscp",
+    "description": "ShipStation to ControlPad Translation API",
+    "type": "package",
     "require": {
         "php": "^7.2.5",
         "flipbox/lumen-generator": "^7.0",

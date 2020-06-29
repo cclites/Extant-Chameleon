@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\ShipStationController;
 use App\Http\Resources\ControlPadResource;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
@@ -9,6 +10,8 @@ use GuzzleHttp\Client;
 
 use App\DataModels\ControlPadDataModel;
 use App\DataModels\ShipStationDataModel;
+
+use CpOrderFactory;
 
 use App\ControlPad;
 use App\ShipStation;
@@ -89,26 +92,28 @@ class Test extends Command
      */
     public function handle()
     {
-        $orders = $this->controlPad->get('pending')->data;
 
-        echo "\n\n";
-        //echo json_encode($order->lines) . "\n";
+        $path = "https://ssapi11.shipstation.com/shipments?batchId=17908484&includeShipmentItems=False";
 
-        collect($orders)->each(function($order){
-
-            collect($order->lines)->each(function($line) use ($order){
-                echo ControlPadResource::transformCPOrderItemToSSOrderItem($order, $line) . "\n\n";
-            });
-        });
+        //Test Endpoint
+        //$path = 'https://extant.digital/sscp/public/';
+        //$order = CpOrderFactory::create();
 
 
 
+        $response = $this->client->request(
+            'GET',
+            $path,
+            [
+                //'debug' => env('APP_DEBUG'),
+                'headers' => $this->headers
+            ]
+        );
 
 
+        echo "\n\n" . $response->getBody()->getContents() . "\n";
 
+        //$this->controlPad->addTracking(json_encode($response->getBody()->getContents()));
 
-        //echo json_encode($order) . "\n";
-
-        //echo json_encode($result->getBody()->getContents()) . "\n";
     }
 }

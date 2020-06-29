@@ -51,7 +51,7 @@ class ControlPanelToShipStation extends Command
      *
      * @var string
      */
-    protected $description = 'Starts process that grabs unfulfilled orders from ControlPad and inserts them into ShipStation';
+    protected $description = 'Grabs unfulfilled orders from ControlPad and inserts them into ShipStation';
 
     /**
      * Create a new command instance.

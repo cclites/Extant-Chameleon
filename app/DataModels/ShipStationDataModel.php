@@ -7,9 +7,12 @@ use App\Http\Resources\ControlPadResource;
 use App\ShipStation;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Arr;
 
 /**
  * Class ShipStationDataModel
@@ -29,6 +32,7 @@ class ShipStationDataModel extends BaseDataModel
     public $secondsUntilReset;
     public $shipStation;
     public $headers;
+    public $client;
 
     public function __construct()
     {
@@ -36,23 +40,102 @@ class ShipStationDataModel extends BaseDataModel
 
         $this->shipStation = new ShipStation();
         $this->headers = $this->shipStation->getHeader();
+
+        $this->client = new Client(
+            [
+                'base_uri' => config('sscp.SS_BASE_PATH'),
+                'headers' => $this->headers
+            ]);
     }
 
-    public function get()
+    /**
+     * Get order information from ShipStation
+     *
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getResource(string $path)
     {
-        //TODO: Add API call to get ShipStation orders and handle response
+        $response = $this->client->request(
+            'GET',
+            $path /*,
+            [
+                'debug' => env('APP_DEBUG'),
+                'headers' => $this->headers
+            ]*/
+        );
+
+        return json_decode($response->getBody()->getContents());
     }
 
-    public function post($orders)
+
+    /**
+     * @param $orders
+     * @return bool
+     */
+    public function post($orders): bool
     {
-        $request = new Request('POST', $this->SsBasePath, $this->headers, $orders);
-        //$this->sleepIfRateLimited($request);
+        foreach( collect($orders)->chunk(100) as $order ){
 
-        return json_decode($request->getBody()->getContents());
+            try{
+                $this->client->post('orders/createorders',
+                    [
+                        'json' => $order->values()->toArray()
+                    ]
+                );
+             }catch (GuzzleException $e){
+                \Log::info($e->getMessage());
+                \Log::error("Unable to create Shipstation orders");
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    public function addUser($data){
-        //TODO:: Will need to add route to controller
+    public function registerClient($data)
+    {
+        //TODO:: Placeholder for when the ability to register
+        //       clients with ShipStation is allowed.
+    }
+
+    /**
+     * Add order_shipped notification to ShipStation. This can also
+     * be created on the ShipStation dashboard.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function createOrderShippedWebHook()
+    {
+        $data = [
+            "target_url" => config('sscp.API_NOTIFICATIONS'),
+            "event" => "ORDER_SHIPPED",
+            "store_id" => null,
+            "friendly_name" => "Shipstation order shipped"
+        ];
+
+        $response = $this->client->post('webhooks/subscribe', ['json' => $data]);
+
+        return $response;
+    }
+
+    /**
+     * Primarily used for testing
+     *
+     * @param $id
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function removeSsWebHook($id)
+    {
+        $client = new Client([
+            'base_uri' => $this->SsBasePath,
+            'headers' => $this->headers,
+        ]);
+
+        $response = $client->delete('/webhooks/' . $id);
+
+        return $response;
     }
 
     public function update()

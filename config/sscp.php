@@ -25,6 +25,6 @@ return [
     /************************************************************************
      * API notification route
      ************************************************************************/
-    'API_NOTIFICATIONS' => 'http://extant.digital/sscp/public/api/shipstation/notify-shipped',
+    'API_NOTIFICATIONS' => 'http://extant.digital/sscp/public/shipstation/notify-shipped',
 
 ];

@@ -32,26 +32,29 @@ class ShipStationTest extends TestCase
         $this->client = new Client(['base_uri' => config('sscp.SS_BASE_PATH'), 'headers' => $this->shipStation->headers]);
     }
 
-    public function testCanPostSinlgeSsOrder(): void
+
+    /**
+    public function testCanPostSingleSsOrder(): void
     {
         $order = SsOrderFactory::create();
-        $response = $this->client->post('orders/createorders', ['json'=>[$order]]);
+        $response = $this->shipStation->post([$order]);
         $this->assertEquals(200, $response->getStatusCode());
-    }
+    }*/
 
     public function testCanPostMultipleSsOrder(): void
     {
         $orders = [];
-        $cnt = 3;
+        $cnt = 105;
 
         for($i = 0; $i < $cnt; $i += 1){
             $orders[] = SsOrderFactory::create();
         }
 
-        $response = $this->client->post('orders/createorders', ['json'=> $orders]);
-        $this->assertEquals(200, $response->getStatusCode());
+        $response = $this->shipStation->post($orders);
+        $this->assertTrue($response);
     }
 
+    /*
     public function testCanConvertCpOrderToSsOrder(): void
     {
         $cpOrder = [CpOrderFactory::create()];
@@ -63,6 +66,6 @@ class ShipStationTest extends TestCase
         }
 
         $this->assertTrue(false);
-    }
+    }*/
 
 }

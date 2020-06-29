@@ -17,3 +17,4 @@ use Illuminate\Http\Request;
  * PUBLIC ROUTES
  ***************************************************************************/
 Route::post('shipstation/notify-shipped', 'ShipStationController@notifyShipped');
+Route::get('shipstation/notify-shipped', 'ShipStationController@testConnection');

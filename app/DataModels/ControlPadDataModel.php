@@ -43,11 +43,15 @@ class ControlPadDataModel extends BaseDataModel
      * @param string $status
      * @return array|mixed
      */
-    public function get(string $status = ControlPad::DEFAULT_STATUS)
+    public function get(string $status = ControlPad::DEFAULT_STATUS, ?int $buyerId = null)
     {
         $fullUrl = $this->CpBasePath . '/orders?start_date=' . $this->startDate .
                    '&end_date=' . $this->endDate . '&status=' . $status .
                    '&orderlines=1';
+
+        if($buyerId){
+            $fullUrl .= '&buyer_id=' . $buyerId;
+        }
 
         $response = $this->client->request(
             'GET',
@@ -126,7 +130,7 @@ class ControlPadDataModel extends BaseDataModel
         }
     }
 
-    public function addWebHook($webhook = "ORDER_NOTIFY"): bool
+    public function addWebHook($webhook = "SHIP_NOTIFY"): bool
     {
         try{
             $result = $this->client->request(
