@@ -30,14 +30,20 @@ class ControlPadResource extends JsonResource
         ];
     }
 
+    /**
+     * @param array $order
+     * @return array
+     */
     public static function transformCPOrderToSSOrder(array $order): array
     {
-        //$order = collect($order)->all();
+        $items = [];
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
-        $items = collect($order['lines'])->map(function($line) use($customerUserName){
-            return self::transformCPOrderItemToSSOrderItem(collect($line)->toArray(), $customerUserName);
-        });
+        if( array_key_exists('lines', $order)){
+            $items = collect($order['lines'])->map(function($line) use($customerUserName){
+                return self::transformCPOrderItemToSSOrderItem(collect($line)->toArray(), $customerUserName);
+            });
+        }
 
         return [
             'orderNumber' => $order['id'],

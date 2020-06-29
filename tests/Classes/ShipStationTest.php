@@ -33,18 +33,18 @@ class ShipStationTest extends TestCase
     }
 
 
-    /**
     public function testCanPostSingleSsOrder(): void
     {
         $order = SsOrderFactory::create();
         $response = $this->shipStation->post([$order]);
-        $this->assertEquals(200, $response->getStatusCode());
-    }*/
+        $this->assertTrue($response);
+    }
+
 
     public function testCanPostMultipleSsOrder(): void
     {
         $orders = [];
-        $cnt = 105;
+        $cnt = 15;
 
         for($i = 0; $i < $cnt; $i += 1){
             $orders[] = SsOrderFactory::create();
@@ -54,7 +54,7 @@ class ShipStationTest extends TestCase
         $this->assertTrue($response);
     }
 
-    /*
+
     public function testCanConvertCpOrderToSsOrder(): void
     {
         $cpOrder = [CpOrderFactory::create()];
@@ -66,6 +66,6 @@ class ShipStationTest extends TestCase
         }
 
         $this->assertTrue(false);
-    }*/
+    }
 
 }

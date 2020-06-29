@@ -23,6 +23,7 @@ class SsOrderFactory{
             'orderStatus' => 'awaiting_shipment',
             'billTo' => AddressFactory::ssCreate(),
             'shipTo' => AddressFactory::ssCreate(),
+            'lines' => []
         ];
     }
 }

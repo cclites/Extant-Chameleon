@@ -79,7 +79,7 @@ class ShipStationDataModel extends BaseDataModel
         foreach( collect($orders)->chunk(100) as $order ){
 
             try{
-                $this->client->post('orders/createorders',
+                $response = $this->client->post('orders/createorders',
                     [
                         'json' => $order->values()->toArray()
                     ]
