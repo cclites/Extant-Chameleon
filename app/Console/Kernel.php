@@ -26,6 +26,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        $schedule->command('cron:process-cp-to-ss')->withoutOverlapping()->everyFifteenMinutes();
     }
 }

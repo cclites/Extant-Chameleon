@@ -58,7 +58,6 @@ class Setup extends Command
      */
     public function handle()
     {
-        //Deprecated due to change in architecture - architecture change
 
         //id = 4960
 
@@ -75,5 +74,9 @@ class Setup extends Command
 
         echo "\n" . json_encode($contents) . "\n";
         */
+    }
+
+    public function createShippedWebhook(){
+
     }
 }

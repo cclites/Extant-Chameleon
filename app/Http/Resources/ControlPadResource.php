@@ -39,6 +39,7 @@ class ControlPadResource extends JsonResource
         $items = [];
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
+        //Todo::find out if there shold always be order lines
         if( array_key_exists('lines', $order)){
             $items = collect($order['lines'])->map(function($line) use($customerUserName){
                 return self::transformCPOrderItemToSSOrderItem(collect($line)->toArray(), $customerUserName);
@@ -76,8 +77,13 @@ class ControlPadResource extends JsonResource
 
     }
 
-    public static function createTracking($tracking)
+    public static function createTrackingForOrder($order)
     {
-
+        return [
+            'order_id' => $order['id'],
+            'number' => 123456,
+            'url' => $order['resource_url'],
+            'shipped_at' => $order['created_at'],
+        ];
     }
 }
