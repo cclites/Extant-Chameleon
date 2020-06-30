@@ -9,7 +9,8 @@ class CpOrderFactory{
     {
         $faker = Factory::create();
 
-        $lines = OrderLinesFactory::create();
+        //$lines = OrderLinesFactory::create();
+        $lines = [];
 
         return [
             'id' => $faker->randomNumber(2),
