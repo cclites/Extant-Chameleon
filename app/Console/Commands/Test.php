@@ -48,10 +48,13 @@ class Test extends Command
     public $shipStation;
 
     /**
-     * @var
+     * @var array
      */
     public $headers;
 
+    /**
+     * @var GuzzleClient
+     */
     public $client;
 
     /**
@@ -92,28 +95,6 @@ class Test extends Command
      */
     public function handle()
     {
-
-        $path = "https://ssapi11.shipstation.com/shipments?batchId=17908484&includeShipmentItems=False";
-
-        //Test Endpoint
-        //$path = 'https://extant.digital/sscp/public/';
-        //$order = CpOrderFactory::create();
-
-
-
-        $response = $this->client->request(
-            'GET',
-            $path,
-            [
-                //'debug' => env('APP_DEBUG'),
-                'headers' => $this->headers
-            ]
-        );
-
-
-        echo "\n\n" . $response->getBody()->getContents() . "\n";
-
-        //$this->controlPad->addTracking(json_encode($response->getBody()->getContents()));
 
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class ShipStation
 {
+    const MAX_ORDERS_PER_CLIENT = 100;
     protected $header;
 
     /****************************************************

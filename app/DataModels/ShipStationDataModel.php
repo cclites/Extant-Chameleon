@@ -27,6 +27,7 @@ use Illuminate\Support\Arr;
  */
 class ShipStationDataModel extends BaseDataModel
 {
+
     public $maxAllowedRequests;
     public $remainingRequests;
     public $secondsUntilReset;
@@ -55,18 +56,19 @@ class ShipStationDataModel extends BaseDataModel
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getResource(string $path)
+    public function getTrackingResource(string $path)
     {
         $response = $this->client->request(
             'GET',
-            $path /*,
-            [
-                'debug' => env('APP_DEBUG'),
-                'headers' => $this->headers
-            ]*/
+            $path
         );
 
-        return json_decode($response->getBody()->getContents());
+        return collect($response)->shipments->map(function($item) use($path){
+
+            return ControlPadResource::createTrackingForOrder($item, $path);
+
+        });
+
     }
 
 
@@ -76,10 +78,10 @@ class ShipStationDataModel extends BaseDataModel
      */
     public function post($orders): bool
     {
-        foreach( collect($orders)->chunk(100) as $order ){
+        foreach( collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT) as $order ){
 
             try{
-                $response = $this->client->post('orders/createorders',
+                $this->client->post('orders/createorders',
                     [
                         'json' => $order->values()->toArray()
                     ]
@@ -101,12 +103,12 @@ class ShipStationDataModel extends BaseDataModel
     }
 
     /**
-     * Add order_shipped notification to ShipStation. This can also
+     * Create order_shipped notification for ShipStation. This can also
      * be created on the ShipStation dashboard.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function createOrderShippedWebHook()
+    public function createOrderShippedWebHook(): \Psr\Http\Message\ResponseInterface
     {
         $data = [
             "target_url" => config('sscp.API_NOTIFICATIONS'),
@@ -126,7 +128,7 @@ class ShipStationDataModel extends BaseDataModel
      * @param $id
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function removeSsWebHook($id)
+    public function removeSsWebHook($id): \Psr\Http\Message\ResponseInterface
     {
         $client = new Client([
             'base_uri' => $this->SsBasePath,
@@ -138,22 +140,19 @@ class ShipStationDataModel extends BaseDataModel
         return $response;
     }
 
-    public function update()
-    {
-        //TODO: Add API call to update ShipStation orders and handle response
-        //  Might need this for testing
-    }
-
-    public function isLive()
-    {
-        //TODO: figure out a way to query ShipStation to see if it is alive
-        return true;
-
-    }
-
-    //Generate an array of orders and wrap in a SS create-order request
+    /**
+     * Generate an array of orders and wrap in a SS create-order request
+     *
+     * @param array $orders
+     * @return \Illuminate\Support\Collection
+     */
     public function formatOrders(array $orders)
     {
+        if(!filled($orders)){
+            \Log::error("There really should be orders here");
+            die();
+        }
+
         return collect($orders)->map(function($order){
             return ControlPadResource::transformCPOrderToSSOrder($order);
         });

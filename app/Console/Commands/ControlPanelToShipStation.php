@@ -91,9 +91,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 2. Build an array of CP order ids
         //**************************************************
-        $ids = collect($orders->data)->map(function ($order){
-            return $order->id;
-        })->toArray();
+        $ids = collect($orders->data)->pluck('id');
 
         if(!count($ids)){
             echo "Unable to pull id from data.\n";
@@ -126,7 +124,7 @@ class ControlPanelToShipStation extends Command
         }
 
         //**************************************************
-        // 5. Update ControlPad orders
+        // 5. Update ControlPad orders tp status_pending
         //**************************************************
         $this->controlPad->patch($ids);
 

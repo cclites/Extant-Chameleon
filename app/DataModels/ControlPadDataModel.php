@@ -43,7 +43,7 @@ class ControlPadDataModel extends BaseDataModel
      * @param string $status
      * @return array|mixed
      */
-    public function get(string $status = ControlPad::DEFAULT_STATUS, ?int $buyerId = null)
+    public function get(string $status = ControlPad::DEFAULT_STATUS, ?int $buyerId = null): object
     {
         $fullUrl = $this->CpBasePath . '/orders?start_date=' . $this->startDate .
                    '&end_date=' . $this->endDate . '&status=' . $status .
@@ -75,22 +75,22 @@ class ControlPadDataModel extends BaseDataModel
         foreach ($ids as $id){
 
             try{
-                $result = $this->client->request(
+                $this->client->request(
                     'PATCH',
                     $this->CpBasePath . '/orders/' . $id,
                     [
                         'debug' => env('APP_DEBUG'),
                         'json' => [
                             'status' => $status,
-                            'ids' => $ids
                         ],
                         'headers' => $this->headers
                     ]
                 );
 
-                return ($result->getStatusCode() === 200) ? true : false;
+                return true;
 
             }catch (GuzzleException $e){
+
                 \Log::error("Unable to patch order: $id");
                 \Log::info($e->getMessage());
                 return false;
@@ -99,37 +99,39 @@ class ControlPadDataModel extends BaseDataModel
     }
 
     /**
-     * @param $SsOrder
+     * @param $trackingItems
      * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function addTracking($SsOrder): bool
+    public function addTracking($trackingItems): bool
     {
         try{
-            $result = $this->client->request(
-                'POST',
-                $this->CpBasePath . '/orders/',
-                [
-                    'debug' => env('APP_DEBUG'),
-                    'json' => [
-                        'order_id' => $SsOrder['id'],
-                        'number' => $SsOrder['receipt_id'],
-                        'url' => $this->CpBasePath . "/orders/" . $SsOrder['id'],
-                        'shipped_at' => $SsOrder['created']
-                    ],
-                    'headers' => $this->headers
-                ]
-            );
+            foreach($trackingItems as $item){
 
-            return ($result->getStatusCode() === 200) ? true : false;
+                $this->client->request(
+                    'POST',
+                    $this->CpBasePath . '/tracking/',
+                    [
+                        'json' => $item,
+                    ]
+                );
+            }
+
+            return true;
 
         }catch (GuzzleException $e){
-            \Log::error("Unable to add Tracking to order: " . $SsOrder['id']);
+
+            \Log::error("Unable to add Tracking to order: ");
             \Log::info($e->getMessage());
             return false;
         }
+
     }
 
+    /**
+     * @param string $webhook
+     * @return bool
+     */
     public function addWebHook($webhook = "SHIP_NOTIFY"): bool
     {
         try{
@@ -140,7 +142,7 @@ class ControlPadDataModel extends BaseDataModel
                     'debug' => env('APP_DEBUG'),
                     'json' => [
                         'event' => $webhook,
-                        'target_url' => 'http://extant.digital/sscp/api/shipstation/notify-shipped',
+                        'target_url' => config('sscp.API_NOTIFICATIONS'),
                         'store_id' => null,
                         'friendly_name' => 'Order Notification'
                     ],
@@ -151,15 +153,11 @@ class ControlPadDataModel extends BaseDataModel
             return ($result->getStatusCode() === 200) ? true : false;
 
         }catch(GuzzleException $e){
+
             \Log::error("Unable to add Web Hook");
             \Log::info($e->getMessage());
             return false;
         }
     }
 
-    public function isLive()
-    {
-        //TODO: figure out a way to query ShipStation to see if it is alive
-        return true;
-    }
 }

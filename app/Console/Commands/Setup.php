@@ -14,11 +14,9 @@ use App\ControlPad;
 use App\ShipStation;
 
 /**
- * Class ControlPanelToShipStation
+ * Class Setup
  *
- * Cron job to pull unfulfilled orders from ControlPad,
- * inserts then orders into ShipStation, and then
- * updates the ControlPad order
+ * Create the ShipStation order_sent webhook
  *
  * @package App\Console\Commands
  */
@@ -58,25 +56,7 @@ class Setup extends Command
      */
     public function handle()
     {
-
-        //id = 4960
-
-        /*
-        $delete = false;
-        $response = $this->shipStation->addOrderShippedWebHook();
-
-        $contents = \GuzzleHttp\json_decode($response->getBody()->getContents());
-
-        if($delete){
-            $id = $contents->id;
-            $this->shipStation->removeSsWebHook($contents->id);
-        }
-
-        echo "\n" . json_encode($contents) . "\n";
-        */
+        $this->shipStation->createOrderShippedWebHook();
     }
 
-    public function createShippedWebhook(){
-
-    }
 }
