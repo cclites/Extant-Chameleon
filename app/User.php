@@ -29,4 +29,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+    /**
+     * @param $userAuth
+     * @return array
+     */
+    public static function transformSellerAuths($userAuth): array
+    {
+        $tuples = explode("|", $userAuth);
+
+        return [
+            'seller_id' => $tuples[0],
+            'public_key' => $tuples[1],
+            'private_key' => $tuples[2]
+        ];
+    }
 }

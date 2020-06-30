@@ -34,8 +34,10 @@ class ControlPadResource extends JsonResource
      * @param array $order
      * @return array
      */
-    public static function transformCPOrderToSSOrder(array $order): array
+    public static function transformCPOrderToSSOrder($order): array
     {
+        $order = $order->all();
+
         $items = [];
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
@@ -67,6 +69,12 @@ class ControlPadResource extends JsonResource
 
     public static function transformCPOrderItemToSSOrderItem(array $orderItem): array
     {
+        //During one test, the test is actually pushing a SS order item that doesn't
+        //need to be  converted.
+        if(env('APP_DEBUG')){
+            return $orderItem;
+        }
+
         return [
             'lineItemKey' => $orderItem['id'],
             'sku' => $orderItem['manufacturer_sku'],

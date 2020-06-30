@@ -2,26 +2,23 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Resources\ControlPadResource;
 use Illuminate\Console\Command;
-use Carbon\Carbon;
-use GuzzleHttp\Client;
 
-use App\DataModels\ControlPadDataModel;
-use App\DataModels\ShipStationDataModel;
+use App\DataModelControllers\ShipStationModelController;
 
-use App\ControlPad;
-use App\ShipStation;
 
 /**
- * Class Setup
+ * Setup
  *
- * Create the ShipStation order_sent webhook
+ * 1. Create the ShipStation order_sent webhook
  *
  * @package App\Console\Commands
  */
 class Setup extends Command
 {
+    /**
+     * @var ShipStationModelController
+     */
     public $shipStation;
 
     /**
@@ -36,7 +33,7 @@ class Setup extends Command
      *
      * @var string
      */
-    protected $description = '';
+    protected $description = 'Sscp set-up';
 
     /**
      * Create a new command instance.
@@ -46,7 +43,7 @@ class Setup extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->shipStation = new ShipStationDataModel();
+        $this->shipStation = new ShipStationModelController();
     }
 
     /**

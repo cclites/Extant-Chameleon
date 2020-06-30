@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\DataModels;
+namespace App\DataModelControllers;
 
 
 use App\ControlPad;
 
-class BaseDataModel
+class BaseDataModelController
 {
     protected $CpBasePath;
     protected $CpApiKey;

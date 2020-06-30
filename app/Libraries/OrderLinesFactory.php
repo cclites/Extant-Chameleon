@@ -1,6 +1,6 @@
 <?php
+namespace App\Libraries;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 use Faker\Factory;
 
 class OrderLinesFactory{

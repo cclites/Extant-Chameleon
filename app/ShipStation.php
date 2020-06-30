@@ -20,10 +20,7 @@ class ShipStation
     /****************************************************
      * RELATIONSHIPS
      ****************************************************/
-    public function hasControlPadOrder($order_id)
-    {
-        //TODO: Call get function in ControlPadDataModel
-    }
+
 
     /****************************************************
      * MUTATORS

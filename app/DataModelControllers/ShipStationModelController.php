@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataModels;
+namespace App\DataModelControllers;
 
 use App\ControlPad;
 use App\Http\Resources\ControlPadResource;
@@ -25,7 +25,7 @@ use Illuminate\Support\Arr;
  *
  * @function post (add SS orders)
  */
-class ShipStationDataModel extends BaseDataModel
+class ShipStationModelController extends BaseDataModelController
 {
 
     public $maxAllowedRequests;

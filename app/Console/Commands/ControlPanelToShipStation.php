@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Carbon\Carbon;
 
-use App\DataModels\ControlPadDataModel;
-use App\DataModels\ShipStationDataModel;
+use App\ControlPad;
+use App\User;
+use Carbon\Carbon;
+use App\DataModelControllers\ControlPadModelController;
+use App\DataModelControllers\ShipStationModelController;
 
 /**
  * Class ControlPanelToShipStation
@@ -30,12 +32,12 @@ class ControlPanelToShipStation extends Command
     public $endDate;
 
     /**
-     * @var ControlPadDataModel
+     * @var ControlPadModelController
      */
     public $controlPad;
 
     /**
-     * @var ShipStationDataModel
+     * @var ShipStationModelController
      */
     public $shipStation;
 
@@ -62,10 +64,10 @@ class ControlPanelToShipStation extends Command
     {
         parent::__construct();
 
-        $this->startDate = Carbon::yesterday()->subMonth()->startOfDay();
-        $this->endDate = Carbon::now();
-        $this->controlPad = new ControlPadDataModel($this->startDate, $this->endDate);
-        $this->shipStation = new ShipStationDataModel();
+        $this->startDate = config('sscp.SSCP_START_DATE');
+        $this->endDate = config('sscp.SSCP_END_DATE');
+
+        $this->shipStation = new ShipStationModelController();
     }
 
     /**
@@ -75,14 +77,29 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
+        //Process clients one by one.
+        $this->processOrders(env("USER_1"));
+        //$this->processOrders(env("DEV"));
+        // ...
+    }
+
+    public function processOrders($userAuth)
+    {
+        $credentials = User::transformSellerAuths($userAuth);
+
+        $controlPad = new ControlPadModelController($credentials, $this->startDate, $this->endDate);
+
         //**************************************************
         // 1. Get unfulfilled orders from ControlPad
         //**************************************************
-        $orders = $this->controlPad->get();
+        $orders = $controlPad
+                    ->get(ControlPad::DEFAULT_STATUS, $credentials);
+
+        //TODO:: Test
 
         if(!$orders->data){
             echo "There are no orders to update\n";
-            \Log::error("There are no orders to update.");
+            \Log::info("There are no orders to update.");
             return false;
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 return [
 
     /************************************************************************
@@ -23,8 +25,14 @@ return [
     'SS_DEV_PRIVATE_KEY' => env('SS_DEV_PRIVATE_KEY'),
 
     /************************************************************************
-     * API notification route
+     * API NOTIFICATION ROUTE
      ************************************************************************/
     'API_NOTIFICATIONS' => env('API_NOTIFICATIONS'),
+
+    /************************************************************************
+     * SSCP CONFIGS
+     ************************************************************************/
+    'SSCP_START_DATE' => Carbon::now()->subMinutes(30),
+    'SSCP_END_DATE' => Carbon::now(),
 
 ];

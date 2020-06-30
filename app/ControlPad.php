@@ -30,10 +30,6 @@ class ControlPad
      * RELATIONSHIPS
      ****************************************************/
 
-    public function hasShipStationOrder($order_id)
-    {
-        //TODO: Get ShipStation order by receiptId
-    }
 
     /***************************************************
      * VALIDATION

@@ -1,13 +1,12 @@
 <?php
 
-namespace Tests\Classes;
+namespace Classes;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use GuzzleHttp\Client;
 
-use App\DataModels\ControlPadDataModel;
-use App\DataModels\ShipStationDataModel;
+use App\DataModelControllers\ControlPadModelController;
+use App\DataModelControllers\ShipStationModelController;
 
 use SsOrderFactory;
 use CpOrderFactory;
@@ -26,12 +25,12 @@ class ShipStationTest extends TestCase
     {
         parent::Setup();
 
-        $this->startDate = Carbon::yesterday()->subMonth()->startOfDay();
-        $this->endDate = Carbon::now();
-        $this->shipStation = new ShipStationDataModel();
+        $this->startDate = config('sscp.SSCP_START_DATE');
+        $this->endDate = config('sscp.SSCP_END_DATE');
+
+        $this->shipStation = new ShipStationModelController();
         $this->client = new Client(['base_uri' => config('sscp.SS_BASE_PATH'), 'headers' => $this->shipStation->headers]);
     }
-
 
     public function testCanPostSingleSsOrder(): void
     {
@@ -54,11 +53,10 @@ class ShipStationTest extends TestCase
         $this->assertTrue($response);
     }
 
-
     public function testCanConvertCpOrderToSsOrder(): void
     {
-        $cpOrder = [CpOrderFactory::create()];
-        $convertedOrder = $this->shipStation->formatOrders($cpOrder);
+        $cpOrder = CpOrderFactory::create();
+        $convertedOrder = $this->shipStation->formatOrders([collect($cpOrder)]);
 
         if($convertedOrder[0]['shipTo']){
             $this->assertTrue(true);

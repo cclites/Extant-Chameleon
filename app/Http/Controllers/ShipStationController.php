@@ -8,7 +8,14 @@ use Illuminate\Http\Request;
 
 class ShipStationController extends BaseController
 {
+    /**
+     * @var ShipStation
+     */
     public $shipStation;
+
+    /**
+     * @var ControlPad
+     */
     public $controlPad;
 
     /**
@@ -22,10 +29,14 @@ class ShipStationController extends BaseController
         $this->controlPad = new ControlPad();
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * NOTE: If necessary, this logic can be easily moved into a Job queue.
+     */
     public function notifyShipped(Request $request)
     {
-        \Log::info("NOTIFY SHIPPED");
-
         if($request->resource_url){
 
             $url = $request->resource_url;
@@ -38,18 +49,12 @@ class ShipStationController extends BaseController
 
             //Update control pad orders
             $this->controlPad->patch($ids, 'fulfilled');
-
         }
 
         return response()->json(['message' => 'Notify shipped']);
     }
 
-    public function report(Request $request)
-    {
-        //query for CP records within a date range
-    }
-
     public function testConnection(){
-        return response()->json(['message' => 'Testing connection']);
+        return response()->json(['message' => 'Connected']);
     }
 }

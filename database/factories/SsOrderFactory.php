@@ -2,6 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use Faker\Factory;
+use App\Libraries\AddressFactory;
+use App\Libraries\OrderLinesFactory;
 
 class SsOrderFactory{
 
@@ -23,7 +25,6 @@ class SsOrderFactory{
             'orderStatus' => 'awaiting_shipment',
             'billTo' => AddressFactory::ssCreate(),
             'shipTo' => AddressFactory::ssCreate(),
-            'lines' => []
         ];
     }
 }

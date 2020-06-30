@@ -4,12 +4,13 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\ShipStationController;
 use App\Http\Resources\ControlPadResource;
+use App\User;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-use App\DataModels\ControlPadDataModel;
-use App\DataModels\ShipStationDataModel;
+use App\DataModelControllers\ControlPadModelController;
+use App\DataModelControllers\ShipStationModelController;
 
 use CpOrderFactory;
 
@@ -38,12 +39,12 @@ class Test extends Command
     public $endDate;
 
     /**
-     * @var ControlPadDataModel
+     * @var ControlPadModelController
      */
     public $controlPad;
 
     /**
-     * @var ShipStationDataModel
+     * @var ShipStationModelController
      */
     public $shipStation;
 
@@ -80,10 +81,12 @@ class Test extends Command
     {
         parent::__construct();
 
+        $credentials = User::transformSellerAuths(env('USER_DEV'));
+
         $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
         $this->endDate = Carbon::now();
-        $this->controlPad = new ControlPadDataModel($this->startDate, $this->endDate);
-        $this->shipStation = new ShipStationDataModel();
+        $this->controlPad = new ControlPadModelController($credentials, $this->startDate, $this->endDate);
+        $this->shipStation = new ShipStationModelController();
         $this->headers = $this->shipStation->headers;
         $this->client = new Client();
     }

@@ -3,14 +3,17 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use Faker\Factory;
 
+use App\Libraries\AddressFactory;
+use App\Libraries\OrderLinesFactory;
+
 class CpOrderFactory{
 
     public static function create()
     {
         $faker = Factory::create();
 
-        //$lines = OrderLinesFactory::create();
-        $lines = [];
+        $lines = OrderLinesFactory::create();
+        //$lines = [];
 
         return [
             'id' => $faker->randomNumber(2),

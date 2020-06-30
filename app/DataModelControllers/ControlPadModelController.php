@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataModels;
+namespace App\DataModelControllers;
 
 use App\ControlPad;
 use Carbon\Carbon;
@@ -20,18 +20,20 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @function get (get CP orders)
  * @function path (update CP orders)
  */
-class ControlPadDataModel extends BaseDataModel
+class ControlPadModelController extends BaseDataModelController
 {
     public $startDate;
     public $endDate;
     public $controlPad;
     public $headers;
     public $client;
+    public $sellerInfo;
 
-    public function __construct(?Carbon $startDate, ?Carbon $endDate)
+    public function __construct(array $sellerInfo, ?Carbon $startDate, ?Carbon $endDate)
     {
         parent::boot();
 
+        $this->sellerInfo = $sellerInfo;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
@@ -43,21 +45,21 @@ class ControlPadDataModel extends BaseDataModel
      * @param string $status
      * @return array|mixed
      */
-    public function get(string $status = ControlPad::DEFAULT_STATUS, ?int $buyerId = null): object
+    public function get(string $status = ControlPad::DEFAULT_STATUS, ?object $seller = null): object
     {
         $fullUrl = $this->CpBasePath . '/orders?start_date=' . $this->startDate .
                    '&end_date=' . $this->endDate . '&status=' . $status .
                    '&orderlines=1';
 
-        if($buyerId){
-            $fullUrl .= '&buyer_id=' . $buyerId;
+        if($seller){
+            $fullUrl .= '&buyer_id=' . $seller->seller_id;
         }
 
         $response = $this->client->request(
             'GET',
             $fullUrl,
             [
-                'debug' => env('APP_DEBUG'),
+                //'debug' => env('APP_DEBUG'),
                 'headers' => $this->headers
             ]
         );
@@ -79,7 +81,7 @@ class ControlPadDataModel extends BaseDataModel
                     'PATCH',
                     $this->CpBasePath . '/orders/' . $id,
                     [
-                        'debug' => env('APP_DEBUG'),
+                        //'debug' => env('APP_DEBUG'),
                         'json' => [
                             'status' => $status,
                         ],
