@@ -8,10 +8,7 @@ return [
      * CONTROLPAD CONFIGS
      ************************************************************************/
     'CP_DEV_BASE_PATH'=> env('CP_DEV_BASE_PATH'),
-    'CP_DEV_API_KEY' => env('CP_DEV_API_KEY'),
-
     'CP_BASE_PATH'=> env('CP_BASE_PATH'),
-    'CP_API_KEY' => env('CP_API_KEY'),
 
     /************************************************************************
      * SHIPSTATION CONFIGS
