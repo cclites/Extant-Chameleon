@@ -43,7 +43,8 @@ class Setup extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->shipStation = new ShipStationModelController();
+
+        $this->shipStation = new ShipStationModelController(config('auths.DEV_1'));
     }
 
     /**

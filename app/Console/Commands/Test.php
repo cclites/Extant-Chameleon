@@ -103,6 +103,6 @@ class Test extends Command
      */
     public function handle()
     {
-
+        $results = $this->controlPad->get();
     }
 }

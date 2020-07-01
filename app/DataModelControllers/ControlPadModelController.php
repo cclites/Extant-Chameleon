@@ -4,7 +4,7 @@ namespace App\DataModelControllers;
 
 use App\ControlPad;
 use Carbon\Carbon;
-use GuzzleHttp\Client as Client;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use phpDocumentor\Reflection\Types\Boolean;
 
@@ -26,7 +26,7 @@ class ControlPadModelController extends BaseDataModelController
     public $endDate;
     public $controlPad;
     public $headers;
-    public $client;
+    //public $client;
     public $sellerInfo;
 
     public function __construct(array $auths, ?Carbon $startDate, ?Carbon $endDate)
@@ -38,7 +38,7 @@ class ControlPadModelController extends BaseDataModelController
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
         $this->headers = $this->controlPad->getHeader($auths);
-        $this->client = new Client();
+        //$this->client = new Client();
     }
 
     /**
@@ -47,21 +47,20 @@ class ControlPadModelController extends BaseDataModelController
      * @return object
      * @throws GuzzleException
      */
-    public function get(string $status = ControlPad::DEFAULT_STATUS, ?object $seller = null): object
+    public function get(string $status = ControlPad::DEFAULT_STATUS): object
     {
+
         $fullUrl = $this->CpBasePath . '/orders?start_date=' . $this->startDate .
                    '&end_date=' . $this->endDate . '&status=' . $status .
                    '&orderlines=1';
 
-        if($seller){
-            $fullUrl .= '&buyer_id=' . $seller->seller_id;
-        }
+        $client = new Client();
 
-        $response = $this->client->request(
+        $response = $client->request(
             'GET',
             $fullUrl,
             [
-                //'debug' => env('APP_DEBUG'),
+                'debug' => env('APP_DEBUG'),
                 'headers' => $this->headers
             ]
         );

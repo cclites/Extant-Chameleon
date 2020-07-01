@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use DemeterChain\A;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Request;
+
 use App\ControlPad;
 use App\ShipStation;
-use Illuminate\Http\Request;
+
 
 class ShipStationController extends BaseController
 {
@@ -55,6 +59,9 @@ class ShipStationController extends BaseController
     }
 
     public function testConnection(){
+
+        \Log::info("Running tests");
+
         return response()->json(['message' => 'Test Connection Successful']);
     }
 }

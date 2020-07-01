@@ -65,16 +65,12 @@ class ControlPanelToShipStation extends Command
      *
      * @return void
      */
-    public function __construct($auths)
+    public function __construct()
     {
         parent::__construct();
 
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
-        $this->auths = $auths;
-
-        $this->shipStation = new ShipStationModelController($auths);
-
 
     }
 
@@ -85,13 +81,23 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
+        $clients = config('auths.CLIENTS');
+
+        foreach($clients as $client){
+
+            $this->auths = config('auths.' . $client);
+            $shipStation = new ShipStationModelController($this->auths);
+            $controlPad = new ControlPadModelController($this->auths, $this->startDate, $this->endDate);
+
+            $orders = $controlPad->get('unfulfilled');
+
+            $this->processOrders();
+
+        }
+
         //Process clients one by one.
         $this->processOrders();
 
-
-
-        //$this->processOrders(env("DEV"));
-        // ...
     }
 
     public function processOrders()
@@ -103,8 +109,6 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         $orders = $controlPad
                     ->get(ControlPad::DEFAULT_STATUS);
-
-        //TODO:: Test
 
         if(!$orders->data){
             echo "There are no orders to update\n";

@@ -5,7 +5,7 @@
 <b>Email: </b><a a href="mailto:chad@extant.digital">chad@extant.digital</a><br>
 <b>Slack: </b>extantdigital.slack.com<br><br> 
 
-Document revision date: 6/24/2020<br>
+Document revision date: 7/1/2020<br>
 
 <hr>
 
@@ -23,7 +23,7 @@ PHP 7.2 or greater
 <i>ControlPad to ShipStation Conversion</i>
 <ul>
     <li>Cron job runs artisan cron:process-cp-to-ss</li>
-    <li>SSCP pulls orders by user id.</li>
+    <li>SSCP pulls orders by API key.</li>
     <li>ControlPad order data is transformed into ShipStation order data</li>
     <li>Orders are entered into ShipStation</li>
     <li>Update ControlPad orders to Pending</li>
@@ -40,7 +40,6 @@ PHP 7.2 or greater
 #####General Development Notes:
 
 SSCP is unusual in that instead of running off a database like a conventional web app, but rather acts as a translation layer between ControlPad and ShipStation. There are no model 'relationships' between SS and CP like would normally exist.
-
 
 <i>App\DataModels</i>
 
@@ -72,10 +71,17 @@ Logging.php holds configuration information for Rollbar.
 
 Database.php holds configs for cache storage.
 
+Auths.php holds user API tokens
+
 <i>Jobs</i>
 
 The job classes for ShipStation and ControlPad queues are unused for the moment until testing indicates otherwise. They are stubbed in and ready to go if needed.
 <hr> 
+
+#####Operational Notes:
+
+User authentications are loaded from auths config. When the Cron runs, it looks for an array of users users in auths config, and processes each user.
+
 
 
 

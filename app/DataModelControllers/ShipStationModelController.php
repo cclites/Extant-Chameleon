@@ -59,6 +59,7 @@ class ShipStationModelController extends BaseDataModelController
      */
     public function getTrackingResource(string $path)
     {
+
         $response = $this->client->request(
             'GET',
             $path
