@@ -16,6 +16,11 @@ class ControlPadResource extends JsonResource
         return $order->toArray();
     }
 
+    /**
+     * @param array $cpAddress
+     * @param string $customerName
+     * @return array
+     */
     public static function transformCPAddressToSSAddress(array $cpAddress, string $customerName): array
     {
         return [
@@ -26,7 +31,7 @@ class ControlPadResource extends JsonResource
             'state' => $cpAddress['state'],
             'postalCode' => $cpAddress['zip'],
             'country' => 'US' //TODO: If users from other countries come on board, this will
-                              //  need to be changed to a variable.
+                              //      need to be changed to a field.
         ];
     }
 
@@ -67,10 +72,15 @@ class ControlPadResource extends JsonResource
         ];
     }
 
+    /**
+     * @param array $orderItem
+     * @return array
+     */
     public static function transformCPOrderItemToSSOrderItem(array $orderItem): array
     {
-        //During one test, the test is actually pushing a SS order item that doesn't
-        //need to be  converted.
+        //During testing, order item is already transformed. That is a flaw that can
+        //be fixed by having both an SSOrderFactory and CPOrderFactory so that the
+        //test pushes the correct order type.
         if(env('APP_DEBUG')){
             return $orderItem;
         }
@@ -81,13 +91,16 @@ class ControlPadResource extends JsonResource
             'name' => $orderItem['name'],
             'quantity' => $orderItem['quantity'],
             'unitPrice' => $orderItem['price'],
-            //'taxAmount' => $orderItem->total_tax,
-            //'shippingAmount' => $orderItem->total_shipping,
             'createDate' => $orderItem['created_at'],
         ];
 
     }
 
+    /**
+     * @param $order
+     * @param $url
+     * @return array
+     */
     public static function createTrackingForOrder($order, $url)
     {
         return [

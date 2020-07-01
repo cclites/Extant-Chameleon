@@ -43,7 +43,9 @@ class ControlPadModelController extends BaseDataModelController
 
     /**
      * @param string $status
-     * @return array|mixed
+     * @param object|null $seller
+     * @return object
+     * @throws GuzzleException
      */
     public function get(string $status = ControlPad::DEFAULT_STATUS, ?object $seller = null): object
     {

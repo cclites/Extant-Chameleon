@@ -19,12 +19,6 @@ return [
     'SS_BASE_PATH'=> env('SS_BASE_PATH'),
 
     /************************************************************************
-     * DEVELOPER CONFIGS
-     ************************************************************************/
-    'SS_DEV_PUBLIC_KEY' => env('SS_DEV_PUBLIC_KEY'),
-    'SS_DEV_PRIVATE_KEY' => env('SS_DEV_PRIVATE_KEY'),
-
-    /************************************************************************
      * API NOTIFICATION ROUTE
      ************************************************************************/
     'API_NOTIFICATIONS' => env('API_NOTIFICATIONS'),
