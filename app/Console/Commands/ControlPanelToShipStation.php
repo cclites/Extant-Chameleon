@@ -42,6 +42,11 @@ class ControlPanelToShipStation extends Command
     public $shipStation;
 
     /**
+     * @var array
+     */
+    public $auths;
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -60,14 +65,17 @@ class ControlPanelToShipStation extends Command
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($auths)
     {
         parent::__construct();
 
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
+        $this->auths = $auths;
 
-        $this->shipStation = new ShipStationModelController();
+        $this->shipStation = new ShipStationModelController($auths);
+
+
     }
 
     /**
@@ -78,22 +86,23 @@ class ControlPanelToShipStation extends Command
     public function handle()
     {
         //Process clients one by one.
-        $this->processOrders(env("USER_1"));
+        $this->processOrders();
+
+
+
         //$this->processOrders(env("DEV"));
         // ...
     }
 
-    public function processOrders($userAuth)
+    public function processOrders()
     {
-        $credentials = User::transformSellerAuths($userAuth);
-
-        $controlPad = new ControlPadModelController($credentials, $this->startDate, $this->endDate);
+        $controlPad = new ControlPadModelController($this->auths, $this->startDate, $this->endDate);
 
         //**************************************************
         // 1. Get unfulfilled orders from ControlPad
         //**************************************************
         $orders = $controlPad
-                    ->get(ControlPad::DEFAULT_STATUS, $credentials);
+                    ->get(ControlPad::DEFAULT_STATUS);
 
         //TODO:: Test
 

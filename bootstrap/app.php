@@ -60,8 +60,9 @@ $app->singleton(
 */
 
 $app->configure('sscp');
-$app->configure('database');
+$app->configure('auths');
 $app->configure('logging');
+//$app->configure('database');
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +75,7 @@ $app->configure('logging');
 |
 */
 
- $app->routeMiddleware([
+ $app->middleware([
      'api' => App\Http\Middleware\ApiAccessMiddleware::class
  ]);
 

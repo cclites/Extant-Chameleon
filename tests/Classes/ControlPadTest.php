@@ -20,17 +20,17 @@ class ControlPadTest extends TestCase
     public $endDate;
     public $controlPad;
     public $shipStation;
+    public $auths;
 
     public function setUp() : void
     {
         parent::Setup();
 
-        $credentials = User::transformSellerAuths(env('USER_DEV'));
-
+        $this->auths = config('auths.DEV_1');
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
-        $this->controlPad = new ControlPadModelController( $credentials, $this->startDate, $this->endDate );
-        $this->shipStation = new ShipStationModelController();
+        $this->controlPad = new ControlPadModelController((array)$this->auths, $this->startDate, $this->endDate );
+        $this->shipStation = new ShipStationModelController($this->auths);
     }
 
     public function testCanGetTestCpOrders()

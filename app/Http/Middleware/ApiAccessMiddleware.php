@@ -15,6 +15,7 @@ class ApiAccessMiddleware
      */
     public function handle($request, Closure $next)
     {
+        \Log::info("API ACCESS MIDDLEWARE");
         return $next($request);
     }
 }

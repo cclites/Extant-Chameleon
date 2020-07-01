@@ -20,15 +20,19 @@ class ShipStationTest extends TestCase
     public $controlPad;
     public $shipStation;
     public $client;
+    public $auths;
 
     public function setUp() : void
     {
         parent::Setup();
 
+        $this->auths = config('auths.DEV_1');
+
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
 
-        $this->shipStation = new ShipStationModelController();
+        $this->shipStation = new ShipStationModelController($this->auths);
+
         $this->client = new Client(['base_uri' => config('sscp.SS_BASE_PATH'), 'headers' => $this->shipStation->headers]);
     }
 
@@ -38,7 +42,6 @@ class ShipStationTest extends TestCase
         $response = $this->shipStation->post([$order]);
         $this->assertTrue($response);
     }
-
 
     public function testCanPostMultipleSsOrder(): void
     {

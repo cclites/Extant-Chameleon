@@ -35,12 +35,13 @@ class ShipStationModelController extends BaseDataModelController
     public $headers;
     public $client;
 
-    public function __construct()
+    public function __construct($auths)
     {
         parent::boot();
 
-        $this->shipStation = new ShipStation();
-        $this->headers = $this->shipStation->getHeader();
+        $shipStation = new ShipStation();
+
+        $this->headers = $shipStation->getHeader($auths);
 
         $this->client = new Client(
             [

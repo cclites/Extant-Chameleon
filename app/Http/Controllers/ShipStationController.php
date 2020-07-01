@@ -55,6 +55,6 @@ class ShipStationController extends BaseController
     }
 
     public function testConnection(){
-        return response()->json(['message' => 'Connected']);
+        return response()->json(['message' => 'Test Connection Successful']);
     }
 }

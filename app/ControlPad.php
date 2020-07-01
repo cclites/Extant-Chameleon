@@ -37,13 +37,9 @@ class ControlPad
     public function rules(){}
 
 
-    public function getHeader()
+    public function getHeader($auths)
     {
-        if(env('APP_DEBUG') === true){
-            $apiKey = config('sscp.CP_DEV_API_KEY');
-        }else{
-            $apiKey = config('sscp.CP_API_KEY');
-        }
+        $apiKey = $auths['ControlPadKey'];
 
         return [
             'Content-Type' => 'application/json',

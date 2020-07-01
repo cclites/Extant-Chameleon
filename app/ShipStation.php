@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Auth;
 class ShipStation
 {
     const MAX_ORDERS_PER_CLIENT = 100;
+
     protected $header;
+
+    public $auths;
 
     /****************************************************
      * RELATIONSHIPS
@@ -27,13 +30,7 @@ class ShipStation
      ****************************************************/
     public function generateRawAuthenticationToken()
     {
-        if(env('APP_DEBUG') === true){
-            return config('sscp.SS_DEV_PUBLIC_KEY') . ":" . config('sscp.SS_DEV_PRIVATE_KEY');
-        }else{
-            return "";
-            //TODO:: Figure out where user credentials are coming from.
-            //return Auth::user()->ss_public_key . ':' . Auth::user()->ss_private_key;
-        }
+        return $this->auths['ShipStationPublicKey'] . ":" . $this->auths['ShipStationPrivateKey'] ;
     }
 
     public function encryptRawAuthenticationToken(string $rawToken)
@@ -57,8 +54,9 @@ class ShipStation
     /****************************************************
      * ACCESSORS
      ****************************************************/
-    public function getHeader()
+    public function getHeader($auths)
     {
+        $this->auths = $auths;
         return $this->buildHeader();
     }
 

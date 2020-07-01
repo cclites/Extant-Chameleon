@@ -54,6 +54,11 @@ class Test extends Command
     public $headers;
 
     /**
+     * @var array
+     */
+    public $auths;
+
+    /**
      * @var GuzzleClient
      */
     public $client;
@@ -81,12 +86,12 @@ class Test extends Command
     {
         parent::__construct();
 
-        $credentials = User::transformSellerAuths(env('USER_DEV'));
+        $auths = config('auths.DEV_1');
 
         $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
         $this->endDate = Carbon::now();
-        $this->controlPad = new ControlPadModelController($credentials, $this->startDate, $this->endDate);
-        $this->shipStation = new ShipStationModelController();
+        $this->controlPad = new ControlPadModelController($auths, $this->startDate, $this->endDate);
+        $this->shipStation = new ShipStationModelController($auths);
         $this->headers = $this->shipStation->headers;
         $this->client = new Client();
     }

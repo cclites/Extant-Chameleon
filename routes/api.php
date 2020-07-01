@@ -3,10 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middleware' => 'api', 'prefix' => 'api'], function()
+
+Route::group(['prefix' => 'api'], function()
 {
     Route::post('shipstation/notify-shipped', 'ShipStationController@notifyShipped');
     Route::get('shipstation/notify-shipped', 'ShipStationController@testConnection');
+
 });
 
 /***************************************************************************

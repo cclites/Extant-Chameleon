@@ -29,15 +29,15 @@ class ControlPadModelController extends BaseDataModelController
     public $client;
     public $sellerInfo;
 
-    public function __construct(array $sellerInfo, ?Carbon $startDate, ?Carbon $endDate)
+    public function __construct(array $auths, ?Carbon $startDate, ?Carbon $endDate)
     {
         parent::boot();
 
-        $this->sellerInfo = $sellerInfo;
+        $this->sellerInfo = $auths;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
-        $this->headers = $this->controlPad->getHeader();
+        $this->headers = $this->controlPad->getHeader($auths);
         $this->client = new Client();
     }
 
