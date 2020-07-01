@@ -96,7 +96,7 @@ class ControlPanelToShipStation extends Command
         }
 
         //Process clients one by one.
-        $this->processOrders();
+        //$this->processOrders();
 
     }
 
