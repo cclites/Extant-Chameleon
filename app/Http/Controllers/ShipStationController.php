@@ -20,7 +20,6 @@ class ShipStationController extends BaseController
     {
         if($request->resource_url){
             $authConfig = config('auths.'.$client);
-            \Log::info('notifyShipped', ['client' => $client, 'config' => $authConfig]);
             if (!$authConfig) {
                 \Log::warning('ShipStationController::notifyShipped client config not found', ['client' => $client]);
                 abort(409, 'Client not configured');
@@ -33,7 +32,6 @@ class ShipStationController extends BaseController
 
             $trackingItems = $shipStation->getTrackingResources($url);
             $ids = collect($trackingItems)->pluck('order_id')->toArray();
-            \Log::info('', ['trackingItems' => $trackingItems, '$ids' => $ids]);
             /***************************************************************/
 
             //Add tracking

@@ -99,7 +99,6 @@ class ControlPadResource extends JsonResource
             'unitPrice' => $orderItem['price'],
             'createDate' => $orderItem['created_at'],
         ];
-
     }
 
     /**
