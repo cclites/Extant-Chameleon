@@ -4,11 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::group(['prefix' => 'api'], function()
+Route::group(['prefix' => 'shipstation'], function()
 {
-    Route::post('shipstation/notify-shipped', 'ShipStationController@notifyShipped');
-    Route::get('shipstation/notify-shipped', 'ShipStationController@testConnection');
-
+    // Webhooks
+    Route::post('webhooks/{client}/notify-shipped', 'ShipStationController@notifyShipped');
 });
 
 /***************************************************************************
@@ -16,4 +15,3 @@ Route::group(['prefix' => 'api'], function()
  ***************************************************************************/
 //Route::post('api/shipstation/report', 'ShipStationController@report');
 //Route::post('api/controlpad/report', 'ControlPadController@report');
-

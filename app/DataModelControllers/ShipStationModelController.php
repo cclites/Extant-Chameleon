@@ -35,13 +35,13 @@ class ShipStationModelController extends BaseDataModelController
     public $headers;
     public $client;
 
-    public function __construct($auths)
+    public function __construct($authConfig)
     {
         parent::boot();
 
         $shipStation = new ShipStation();
 
-        $this->headers = $shipStation->getHeader($auths);
+        $this->headers = $shipStation->getHeader($authConfig);
 
         $this->client = new Client(
             [
@@ -59,18 +59,14 @@ class ShipStationModelController extends BaseDataModelController
      */
     public function getTrackingResource(string $path)
     {
-
         $response = $this->client->request(
             'GET',
             $path
         );
 
         return collect($response)->shipments->map(function($item) use($path){
-
             return ControlPadResource::createTrackingForOrder($item, $path);
-
         });
-
     }
 
 
@@ -122,6 +118,27 @@ class ShipStationModelController extends BaseDataModelController
         $response = $this->client->post('webhooks/subscribe', ['json' => $data]);
 
         return $response;
+    }
+
+    /**
+     * Get order information from ShipStation
+     *
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getTrackingResources(string $path)
+    {
+
+        $response = $this->client->request(
+            'GET',
+            $path
+        );
+        $responseBody = json_decode($response->getBody());
+        \Log::info('getTrackingResource', ['responseBody' => $responseBody]);
+        return collect($responseBody->shipments)->map(function($item) use($path){
+            return ControlPadResource::createTrackingForOrder($item, $path);
+        });
     }
 
     /**

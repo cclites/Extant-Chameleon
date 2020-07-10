@@ -110,10 +110,10 @@ class ControlPadResource extends JsonResource
     public static function createTrackingForOrder($order, $url)
     {
         return [
-            'order_id' => $order['orderId'],
-            'number' => $order['orderNumber'],
+            'order_id' => $order->orderId,
+            'number' => $order->orderNumber,
             'url' => $url,
-            'shipped_at' => $order['shipDate'],
+            'shipped_at' => $order->shipDate,
         ];
     }
 }

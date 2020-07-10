@@ -18,7 +18,7 @@ class ShipStation
 
     protected $header;
 
-    public $auths;
+    public $authConfig;
 
     /****************************************************
      * RELATIONSHIPS
@@ -30,7 +30,7 @@ class ShipStation
      ****************************************************/
     public function generateRawAuthenticationToken()
     {
-        return $this->auths['ShipStationPublicKey'] . ":" . $this->auths['ShipStationPrivateKey'] ;
+        return $this->authConfig['ShipStationPublicKey'] . ":" . $this->authConfig['ShipStationPrivateKey'] ;
     }
 
     public function encryptRawAuthenticationToken(string $rawToken)
@@ -54,9 +54,9 @@ class ShipStation
     /****************************************************
      * ACCESSORS
      ****************************************************/
-    public function getHeader($auths)
+    public function getHeader($authConfig)
     {
-        $this->auths = $auths;
+        $this->authConfig = $authConfig;
         return $this->buildHeader();
     }
 
