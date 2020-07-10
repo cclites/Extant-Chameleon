@@ -75,10 +75,12 @@ class ControlPadModelController extends BaseDataModelController
      */
     public function patch(array $ids, ?string $status = 'pending'): bool
     {
+        $client = new Client();
+
         foreach ($ids as $id){
 
             try{
-                $this->client->request(
+                $client->request(
                     'PATCH',
                     $this->CpBasePath . '/orders/' . $id,
                     [
@@ -108,10 +110,12 @@ class ControlPadModelController extends BaseDataModelController
      */
     public function addTracking($trackingItems): bool
     {
+        $client = new Client();
+
         try{
             foreach($trackingItems as $item){
 
-                $this->client->request(
+                $client->request(
                     'POST',
                     $this->CpBasePath . '/tracking/',
                     [
@@ -137,8 +141,10 @@ class ControlPadModelController extends BaseDataModelController
      */
     public function addWebHook($webhook = "SHIP_NOTIFY"): bool
     {
+        $client = new Client();
+
         try{
-            $result = $this->client->request(
+            $result = $client->request(
                 'POST',
                 $this->CpBasePath . '/webhooks/subscribe',
                 [

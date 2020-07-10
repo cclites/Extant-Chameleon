@@ -23,7 +23,7 @@ return [
     /************************************************************************
      * SSCP CONFIGS
      ************************************************************************/
-    'SSCP_START_DATE' => Carbon::now()->subMinutes(30),
+    'SSCP_START_DATE' => Carbon::now()->subYears(2),
     'SSCP_END_DATE' => Carbon::now(),
 
 ];

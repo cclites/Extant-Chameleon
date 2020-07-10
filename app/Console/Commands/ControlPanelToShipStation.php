@@ -86,7 +86,7 @@ class ControlPanelToShipStation extends Command
         foreach($clients as $client){
 
             $this->auths = config('auths.' . $client);
-            $shipStation = new ShipStationModelController($this->auths);
+            $this->shipStation = new ShipStationModelController($this->auths);
             $controlPad = new ControlPadModelController($this->auths, $this->startDate, $this->endDate);
 
             $orders = $controlPad->get('unfulfilled');
@@ -121,7 +121,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 2. Build an array of CP order ids
         //**************************************************
-        $ids = collect($orders->data)->pluck('id');
+        $ids = collect($orders->data)->pluck('id')->toArray();
 
         if(!count($ids)){
             echo "Unable to pull id from data.\n";
@@ -156,7 +156,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 5. Update ControlPad orders tp status_pending
         //**************************************************
-        $this->controlPad->patch($ids);
+        $controlPad->patch($ids);
 
         return true;
     }

@@ -23,6 +23,12 @@ class ControlPadResource extends JsonResource
      */
     public static function transformCPAddressToSSAddress(array $cpAddress, string $customerName): array
     {
+        // If debugging, the address will already be formatted correctly.
+        // This is a flaw.
+        if(env('APP_DEBUG')){
+            return $cpAddress;
+        }
+
         return [
             'name' => $customerName,
             'street1' => $cpAddress['line_1'],
@@ -41,7 +47,7 @@ class ControlPadResource extends JsonResource
      */
     public static function transformCPOrderToSSOrder($order): array
     {
-        $order = $order->all();
+        $order = collect($order)->all();
 
         $items = [];
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
