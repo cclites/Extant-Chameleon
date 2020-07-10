@@ -110,8 +110,8 @@ class ControlPadResource extends JsonResource
     {
         return [
             'order_id' => $order->orderId,
-            'number' => $order->orderNumber,
-            'url' => $url,
+            'number' => $order->trackingNumber,
+            'url' => '',
             'shipped_at' => $order->shipDate,
         ];
     }

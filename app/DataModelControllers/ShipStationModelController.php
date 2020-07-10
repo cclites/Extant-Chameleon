@@ -51,26 +51,6 @@ class ShipStationModelController extends BaseDataModelController
     }
 
     /**
-     * Get order information from ShipStation
-     *
-     * @param string $path
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getTrackingResource(string $path)
-    {
-        $response = $this->client->request(
-            'GET',
-            $path
-        );
-
-        return collect($response)->shipments->map(function($item) use($path){
-            return ControlPadResource::createTrackingForOrder($item, $path);
-        });
-    }
-
-
-    /**
      * @param $orders
      * @return bool
      */
@@ -129,13 +109,11 @@ class ShipStationModelController extends BaseDataModelController
      */
     public function getTrackingResources(string $path)
     {
-
         $response = $this->client->request(
             'GET',
             $path
         );
         $responseBody = json_decode($response->getBody());
-        \Log::info('getTrackingResource', ['responseBody' => $responseBody]);
         return collect($responseBody->shipments)->map(function($item) use($path){
             return ControlPadResource::createTrackingForOrder($item, $path);
         });
