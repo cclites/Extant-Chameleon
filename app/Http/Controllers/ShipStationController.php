@@ -49,6 +49,7 @@ class ShipStationController extends BaseController
             //$trackingItems = $this->shipStation->getTrackingResource($url);
             $trackingItems = $this->getTrackingResources($url);
             $ids = collect($trackingItems)->pluck('id');
+            /***************************************************************/
 
             //Add tracking
             $this->controlPad->addTracking($trackingItems);
