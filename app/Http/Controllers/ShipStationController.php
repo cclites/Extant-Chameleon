@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ControlPadResource;
 use DemeterChain\A;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
@@ -45,7 +46,8 @@ class ShipStationController extends BaseController
 
             $url = $request->resource_url;
 
-            $trackingItems = $this->shipStation->getTrackingResource($url);
+            //$trackingItems = $this->shipStation->getTrackingResource($url);
+            $trackingItems = $this->getTrackingResources($url);
             $ids = collect($trackingItems)->pluck('id');
 
             //Add tracking
@@ -56,6 +58,29 @@ class ShipStationController extends BaseController
         }
 
         return response()->json(['message' => 'Notify shipped']);
+    }
+
+    /**
+     * Get order information from ShipStation
+     *
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getTrackingResources(string $path)
+    {
+
+        $response = $this->client->request(
+            'GET',
+            $path
+        );
+
+        return collect($response)->shipments->map(function($item) use($path){
+
+            return ControlPadResource::createTrackingForOrder($item, $path);
+
+        });
+
     }
 
     public function testConnection(){
