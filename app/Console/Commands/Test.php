@@ -85,15 +85,6 @@ class Test extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $auths = config('auths.DEV_1');
-
-        $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
-        $this->endDate = Carbon::now();
-        $this->controlPad = new ControlPadModelController($auths, $this->startDate, $this->endDate);
-        $this->shipStation = new ShipStationModelController($auths);
-        $this->headers = $this->shipStation->headers;
-        $this->client = new Client();
     }
 
     /**
@@ -103,6 +94,14 @@ class Test extends Command
      */
     public function handle()
     {
+        $auths = config('auths.DEV_1');
+
+        $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
+        $this->endDate = Carbon::now();
+        $this->controlPad = new ControlPadModelController($auths, $this->startDate, $this->endDate);
+        $this->shipStation = new ShipStationModelController($auths);
+        $this->headers = $this->shipStation->headers;
+        $this->client = new Client();
         $results = $this->controlPad->get();
     }
 }
