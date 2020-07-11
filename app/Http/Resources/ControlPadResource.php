@@ -32,7 +32,7 @@ class ControlPadResource extends JsonResource
         return [
             'name' => $customerName,
             'street1' => $cpAddress['line_1'],
-            'street2' => $cpAddress['line_2'],
+            'street2' => !empty($cpAddress['line_2']) ? $cpAddress['line_2'] : null,
             'city' => $cpAddress['city'],
             'state' => $cpAddress['state'],
             'postalCode' => $cpAddress['zip'],
