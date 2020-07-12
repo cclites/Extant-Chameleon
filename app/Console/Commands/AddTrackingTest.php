@@ -20,7 +20,7 @@ use App\Libraries\TrackingFactory;
  *
  * @package App\Console\Commands
  */
-class Test extends Command
+class AddTrackingTest extends Command
 {
     /**
      * @var Carbon
@@ -62,7 +62,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $signature = 'test:stuff';
+    protected $signature = 'add:tracking';
 
     /**
      * The console command description.
@@ -88,6 +88,46 @@ class Test extends Command
      */
     public function handle()
     {
-  
+        //Test PID
+        $pid = '1uhxqtbcv5utau6fmf8a4eipp';
+        //Test receipt_id
+        $receiptId = 'OY6TKN-24';
+
+        $authConfigs = config('auths.DEV_1');
+
+        $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
+        $this->endDate = Carbon::now();
+        $this->controlPad = new ControlPadModelController($authConfigs, $this->startDate, $this->endDate);
+        $this->shipStation = new ShipStationModelController($authConfigs);
+        $this->headers = $this->shipStation->headers;
+
+        $this->client = new Client();
+
+
+        $results = $this->controlPad->get();
+
+        //Retrieve the one record I want
+        $order = collect($results->data)->where('pid', $pid)->first();
+
+        if(!$order->receipt_id === $receiptId){
+            echo "\nUnable to find correct record using PID, and validated by cross-checking receipt id\n";
+            die();
+        }
+
+        echo "\nOrder status " . $order->status . "\n";
+
+        //Now add tracking info
+        $trackingData = TrackingFactory::create($order);
+
+        //Find the result I need
+        //echo "\n" . json_encode($trackingData) . "\n";
+
+        //Post tracking data to Control Pad
+        $result = $this->controlPad->addTracking([$trackingData]);
+
+        echo "\n" . json_encode($result) . "\n";
+
+
+
     }
 }

@@ -96,24 +96,27 @@ class ControlPadModelController extends BaseDataModelController
      * @param $trackingItems
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function addTracking($trackingItems)
+    public function addTracking(array $trackingItems)
     {
         $client = new Client();
 
         try{
             foreach($trackingItems as $item){
 
-                $client->request(
-                    'POST',
-                    $this->CpBasePath . '/tracking/',
-                    [
-                        'json' => $item,
-                        'headers' => $this->headers
-                    ]
-                );
+                $result = $client->request(
+                                'POST',
+                                $this->CpBasePath . '/tracking/',
+                                [
+                                    'json' => $item,
+                                    'headers' => $this->headers
+                                ]
+                            );
+
+                return $result->getBody()->getContents();
             }
         }catch (GuzzleException $e){
             \Log::error($e, ['fingerprint' => 'Unable to add Tracking to order', 'item' => $item]);
+            return ['fingerprint' => 'Unable to add Tracking to order', 'item' => $item];
         }
     }
 
