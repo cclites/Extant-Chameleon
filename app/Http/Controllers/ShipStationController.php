@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ControlPadResource;
 use DemeterChain\A;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 
@@ -71,7 +72,9 @@ class ShipStationController extends BaseController
     public function getTrackingResources(string $path)
     {
 
-        $response = $this->client->request(
+        $client = new Client();
+
+        $response = $client->request(
             'GET',
             $path
         );
