@@ -32,21 +32,6 @@ class ControlPanelToShipStation extends Command
     public $endDate;
 
     /**
-     * @var ControlPadModelController
-     */
-    public $controlPad;
-
-    /**
-     * @var ShipStationModelController
-     */
-    public $shipStation;
-
-    /**
-     * @var array
-     */
-    public $auths;
-
-    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -68,10 +53,8 @@ class ControlPanelToShipStation extends Command
     public function __construct()
     {
         parent::__construct();
-
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
-
     }
 
     /**
@@ -84,25 +67,15 @@ class ControlPanelToShipStation extends Command
         $clients = config('auths.CLIENTS');
 
         foreach($clients as $client){
-
-            $this->auths = config('auths.' . $client);
-            $this->shipStation = new ShipStationModelController($this->auths);
-            $controlPad = new ControlPadModelController($this->auths, $this->startDate, $this->endDate);
-
-            $orders = $controlPad->get('unfulfilled');
-
-            $this->processOrders();
-
+            $this->processOrders($client);
         }
-
-        //Process clients one by one.
-        //$this->processOrders();
-
     }
 
-    public function processOrders()
+    public function processOrders($client)
     {
-        $controlPad = new ControlPadModelController($this->auths, $this->startDate, $this->endDate);
+        $authConfig = config('auths.' . $client);
+        $shipStation = new ShipStationModelController($authConfig);
+        $controlPad = new ControlPadModelController($authConfig, $this->startDate, $this->endDate);
 
         //**************************************************
         // 1. Get unfulfilled orders from ControlPad
@@ -134,7 +107,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 3. Convert CP Order data to SS order data
         //**************************************************
-        $transformedOrders = $this->shipStation->formatOrders($orders->data);
+        $transformedOrders = $shipStation->formatOrders($orders->data);
 
         if(!$transformedOrders){
             echo "Unable to process transformed orders.\n";
@@ -145,7 +118,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 4. Post orders to ShipStation
         //**************************************************
-        $response = $this->shipStation->post($transformedOrders);
+        $response = $shipStation->post($transformedOrders);
 
         if(!$response){
             echo "No response when posting orders to ShipStation.\n";

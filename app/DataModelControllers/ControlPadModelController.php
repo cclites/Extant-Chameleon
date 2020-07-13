@@ -26,18 +26,15 @@ class ControlPadModelController extends BaseDataModelController
     public $endDate;
     public $controlPad;
     public $headers;
-    //public $client;
-    public $sellerInfo;
 
-    public function __construct(array $auths, ?Carbon $startDate, ?Carbon $endDate)
+    public function __construct(array $authConfig, ?Carbon $startDate, ?Carbon $endDate)
     {
         parent::boot();
 
-        $this->sellerInfo = $auths;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
-        $this->headers = $this->controlPad->getHeader($auths);
+        $this->headers = $this->controlPad->getHeader($authConfig);
         //$this->client = new Client();
     }
 
@@ -71,14 +68,12 @@ class ControlPadModelController extends BaseDataModelController
     /**
      * @param array $ids
      * @param string|null $status
-     * @return bool
      */
-    public function patch(array $ids, ?string $status = 'pending'): bool
+    public function patch(array $ids, ?string $status = 'pending')
     {
         $client = new Client();
 
         foreach ($ids as $id){
-
             try{
                 $client->request(
                     'PATCH',
@@ -91,48 +86,38 @@ class ControlPadModelController extends BaseDataModelController
                         'headers' => $this->headers
                     ]
                 );
-
-                return true;
-
             }catch (GuzzleException $e){
-
-                \Log::error("Unable to patch order: $id");
-                \Log::info($e->getMessage());
-                return false;
+                \Log::error($e, ['fingerprint' => 'Unable to patch order', 'id' => $id]);
             }
         }
     }
 
     /**
      * @param $trackingItems
-     * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function addTracking($trackingItems): bool
+    public function addTracking(array $trackingItems)
     {
         $client = new Client();
 
         try{
             foreach($trackingItems as $item){
 
-                $client->request(
-                    'POST',
-                    $this->CpBasePath . '/tracking/',
-                    [
-                        'json' => $item,
-                    ]
-                );
+                $result = $client->request(
+                                'POST',
+                                $this->CpBasePath . '/tracking/',
+                                [
+                                    'json' => $item,
+                                    'headers' => $this->headers
+                                ]
+                            );
+
+                return $result->getBody()->getContents();
             }
-
-            return true;
-
         }catch (GuzzleException $e){
-
-            \Log::error("Unable to add Tracking to order: ");
-            \Log::info($e->getMessage());
-            return false;
+            \Log::error($e, ['fingerprint' => 'Unable to add Tracking to order', 'item' => $item]);
+            return ['fingerprint' => 'Unable to add Tracking to order', 'item' => $item];
         }
-
     }
 
     /**

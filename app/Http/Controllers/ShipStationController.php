@@ -2,89 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ControlPadResource;
-use DemeterChain\A;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 
-use App\ControlPad;
-use App\ShipStation;
+use App\DataModelControllers\ControlPadModelController;
+use App\DataModelControllers\ShipStationModelController;
 
 
 class ShipStationController extends BaseController
 {
-    /**
-     * @var ShipStation
-     */
-    public $shipStation;
-
-    /**
-     * @var ControlPad
-     */
-    public $controlPad;
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->shipStation = new ShipStation();
-        $this->controlPad = new ControlPad();
-    }
-
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * NOTE: If necessary, this logic can be easily moved into a Job queue.
      */
-    public function notifyShipped(Request $request)
+    public function notifyShipped(Request $request, $client)
     {
         if($request->resource_url){
+            $authConfig = config('auths.'.$client);
+            if (!$authConfig) {
+                \Log::warning('ShipStationController::notifyShipped client config not found', ['client' => $client]);
+                abort(409, 'Client not configured');
+            }
 
             $url = $request->resource_url;
 
-            //$trackingItems = $this->shipStation->getTrackingResource($url);
-            $trackingItems = $this->getTrackingResources($url);
-            $ids = collect($trackingItems)->pluck('id');
+            $shipStation = new ShipStationModelController($authConfig);
+            $controlPad = new ControlPadModelController($authConfig, null, null);
+
+            $trackingItems = $shipStation->getTrackingResources($url);
+            $ids = collect($trackingItems)->pluck('order_id')->toArray();
             /***************************************************************/
 
             //Add tracking
-            $this->controlPad->addTracking($trackingItems);
+            $controlPad->addTracking($trackingItems->toArray());
 
             //Update control pad orders
-            $this->controlPad->patch($ids, 'fulfilled');
+            $controlPad->patch($ids, 'fulfilled');
         }
 
         return response()->json(['message' => 'Notify shipped']);
-    }
-
-    /**
-     * Get order information from ShipStation
-     *
-     * @param string $path
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getTrackingResources(string $path)
-    {
-
-        $client = new Client();
-
-        $response = $client->request(
-            'GET',
-            $path
-        );
-
-        return collect($response)->shipments->map(function($item) use($path){
-
-            return ControlPadResource::createTrackingForOrder($item, $path);
-
-        });
-
     }
 
     public function testConnection(){

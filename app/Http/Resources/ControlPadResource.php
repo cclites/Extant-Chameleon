@@ -32,7 +32,7 @@ class ControlPadResource extends JsonResource
         return [
             'name' => $customerName,
             'street1' => $cpAddress['line_1'],
-            'street2' => $cpAddress['line_2'],
+            'street2' => !empty($cpAddress['line_2']) ? $cpAddress['line_2'] : null,
             'city' => $cpAddress['city'],
             'state' => $cpAddress['state'],
             'postalCode' => $cpAddress['zip'],
@@ -99,7 +99,6 @@ class ControlPadResource extends JsonResource
             'unitPrice' => $orderItem['price'],
             'createDate' => $orderItem['created_at'],
         ];
-
     }
 
     /**
@@ -110,10 +109,10 @@ class ControlPadResource extends JsonResource
     public static function createTrackingForOrder($order, $url)
     {
         return [
-            'order_id' => $order['orderId'],
-            'number' => $order['orderNumber'],
-            'url' => $url,
-            'shipped_at' => $order['shipDate'],
+            'order_id' => $order->orderId,
+            'number' => $order->trackingNumber,
+            'url' => '',
+            'shipped_at' => $order->shipDate,
         ];
     }
 }

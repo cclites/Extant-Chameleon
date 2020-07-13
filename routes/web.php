@@ -1,5 +1,10 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+
+Route::get('/', 'IntegrityController@ping');
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -10,4 +15,3 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
