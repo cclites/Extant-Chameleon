@@ -114,7 +114,7 @@ class ControlPadResource extends JsonResource
         $order = $order->shipments[0];
 
         return [
-            'order_id' => $order->id,
+            'order_id' => $order->trackingNumber,
             'number' => $order->orderNumber,
             'url' => Tracking::getTrackingUrl($order),
             'shipped_at' => $order->shipDate,
