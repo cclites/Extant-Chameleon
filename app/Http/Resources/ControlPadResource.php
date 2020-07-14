@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Tracking;
 
 
 class ControlPadResource extends JsonResource
@@ -111,7 +112,7 @@ class ControlPadResource extends JsonResource
         return [
             'order_id' => $order->orderId,
             'number' => $order->trackingNumber,
-            'url' => '',
+            'url' => Tracking::getTrackingUrl($order),
             'shipped_at' => $order->shipDate,
         ];
     }
