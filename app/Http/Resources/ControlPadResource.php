@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Tracking;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Tracking;
 
@@ -25,7 +26,7 @@ class ControlPadResource extends JsonResource
     public static function transformCPAddressToSSAddress(array $cpAddress, string $customerName): array
     {
         // If debugging, the address will already be formatted correctly.
-        // This is a flaw.
+        // Not cool having it here, but here it is
         if(env('APP_DEBUG')){
             return $cpAddress;
         }
@@ -107,11 +108,14 @@ class ControlPadResource extends JsonResource
      * @param $url
      * @return array
      */
-    public static function createTrackingForOrder($order, $url)
+    public static function createTrackingForOrder($order)
     {
+        $order = json_decode($order);
+        $order = $order->shipments[0];
+
         return [
-            'order_id' => $order->orderId,
-            'number' => $order->trackingNumber,
+            'order_id' => $order->id,
+            'number' => $order->orderNumber,
             'url' => Tracking::getTrackingUrl($order),
             'shipped_at' => $order->shipDate,
         ];
