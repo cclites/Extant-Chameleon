@@ -26,5 +26,11 @@ return [
     'SSCP_START_DATE' => Carbon::now()->subYears(2),
     'SSCP_END_DATE' => Carbon::now(),
 
+    'TRACKING_URLS' => [
+        'USPS' => 'https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1=',
+        'UPS' => 'http://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=',
+        'FEDEX' => 'http://www.fedex.com/Tracking?tracknumbers='
+    ],
+
 ];
 
