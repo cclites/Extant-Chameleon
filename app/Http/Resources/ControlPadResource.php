@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use App\Tracking;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Tracking;
 
 
 class ControlPadResource extends JsonResource
