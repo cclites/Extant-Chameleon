@@ -114,8 +114,8 @@ class ShipStationModelController extends BaseDataModelController
             $path
         );
         $responseBody = json_decode($response->getBody());
-        return collect($responseBody->shipments)->map(function($item) use($path){
-            return ControlPadResource::createTrackingForOrder($item, $path);
+        return collect($responseBody->shipments)->map(function($shipment) {
+            return ControlPadResource::createTrackingForShipment($shipment);
         });
     }
 
