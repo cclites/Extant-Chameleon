@@ -37,7 +37,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['rollbar','daily'],
         ],
 
         'single' => [
@@ -103,7 +103,7 @@ return [
             'driver' => 'monolog',
             'handler' => Rollbar\Monolog\Handler\RollbarHandler::class,
             'access_token' => env('ROLLBAR_TOKEN'),
-            'level' => 'error',
+            'level' => env('ROLLBAR_LOG_LEVEL', 'error'),
         ]
     ],
 
