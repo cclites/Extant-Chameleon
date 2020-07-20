@@ -107,16 +107,13 @@ class ControlPadResource extends JsonResource
      * @param $url
      * @return array
      */
-    public static function createTrackingForOrder($order)
+    public static function createTrackingForShipment($shipment)
     {
-        $order = json_decode($order);
-        $order = $order->shipments[0];
-
         return [
-            'order_id' => $order->orderNumber,
-            'number' => $order->trackingNumber,
-            'url' => Tracking::getTrackingUrl($order),
-            'shipped_at' => $order->shipDate,
+            'order_id' => $shipment->orderNumber,
+            'number' => $shipment->trackingNumber,
+            'url' => Tracking::getTrackingUrl($shipment),
+            'shipped_at' => $shipment->shipDate,
         ];
     }
 }
