@@ -13,7 +13,7 @@ class Tracking
 {
     public static function getTrackingUrl($shipment){
 
-        $tracking = config('sscp.TRACKING_URLS');
+        $tracking = config('sscp.SHIPSTATION_TRACKING_URLS');
 
         if(Str::contains($shipment->serviceCode, 'usps')){
             return $tracking['USPS'] . $shipment->trackingNumber;

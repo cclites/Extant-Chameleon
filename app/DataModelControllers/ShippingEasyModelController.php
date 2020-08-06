@@ -25,7 +25,7 @@ use Illuminate\Support\Arr;
  *
  * @function post (add SS orders)
  */
-class ShipStationModelController extends BaseDataModelController
+class ShippingEasyModelController extends BaseDataModelController
 {
 
     public $maxAllowedRequests;
@@ -89,7 +89,7 @@ class ShipStationModelController extends BaseDataModelController
     public function createOrderShippedWebHook(): \Psr\Http\Message\ResponseInterface
     {
         $data = [
-            "target_url" => config('sscp.SHIPSTATION.API_NOTIFICATIONS'),
+            "target_url" => config('sscp.SHIPSTATION_API_NOTIFICATIONS'),
             "event" => "ORDER_SHIPPED",
             "store_id" => null,
             "friendly_name" => "Shipstation order shipped"

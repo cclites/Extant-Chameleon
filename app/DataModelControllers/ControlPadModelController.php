@@ -136,7 +136,7 @@ class ControlPadModelController extends BaseDataModelController
                     'debug' => env('APP_DEBUG'),
                     'json' => [
                         'event' => $webhook,
-                        'target_url' => config('sscp.API_NOTIFICATIONS'),
+                        'target_url' => config('sscp.SHIPSTATION.API_NOTIFICATIONS'),
                         'store_id' => null,
                         'friendly_name' => 'Order Notification'
                     ],

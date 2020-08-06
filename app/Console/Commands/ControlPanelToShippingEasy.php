@@ -8,7 +8,7 @@ use App\ControlPad;
 use App\User;
 use Carbon\Carbon;
 use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\DataModelControllers\ShippingEasyModelController;
 
 /**
  * Class ControlPanelToShipStation
@@ -19,7 +19,7 @@ use App\DataModelControllers\ShipStationModelController;
  *
  * @package App\Console\Commands
  */
-class ControlPanelToShipStation extends Command
+class ControlPanelToShippingEasy extends Command
 {
     /**
      * @var Carbon
@@ -36,14 +36,14 @@ class ControlPanelToShipStation extends Command
      *
      * @var string
      */
-    protected $signature = 'cron:process-cp-to-ss';
+    protected $signature = 'cron:process-cp-to-se';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Grabs unfulfilled orders from ControlPad and inserts them into ShipStation';
+    protected $description = 'Grabs unfulfilled orders from ControlPad and inserts them into ShippingEasy';
 
     /**
      * Create a new command instance.
@@ -64,7 +64,7 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
-        $clients = config('auths.CLIENTS');
+        $clients = config('auths.CLIENTS.SHIPPINGEASY');
 
         foreach($clients as $client){
             $this->processOrders($client);
@@ -74,7 +74,7 @@ class ControlPanelToShipStation extends Command
     public function processOrders($client)
     {
         $authConfig = config('auths.' . $client);
-        $shipStation = new ShipStationModelController($authConfig);
+        $shippingEasy = new ShippingEasyModelController($authConfig);
         $controlPad = new ControlPadModelController($authConfig, $this->startDate, $this->endDate);
 
         //**************************************************
@@ -107,7 +107,8 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 3. Convert CP Order data to SS order data
         //**************************************************
-        $transformedOrders = $shipStation->formatOrders($orders->data);
+        //TODO:
+        $transformedOrders = $shippingEasy->formatOrders($orders->data);
 
         if(!$transformedOrders){
             echo "Unable to process transformed orders.\n";
@@ -118,7 +119,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 4. Post orders to ShipStation
         //**************************************************
-        $response = $shipStation->post($transformedOrders);
+        $response = $shippingEasy->post($transformedOrders);
 
         if(!$response){
             echo "No response when posting orders to ShipStation.\n";

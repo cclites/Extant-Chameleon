@@ -1,5 +1,12 @@
 <?php
 
+require(dirname(__FILE__) . 'integration_wrappers/ShippingEasy/lib/ShippingEasy.php');
+
+/**
+ * NOTE: This is necessary because Lumen does not have the
+ *       config_path or app_path helpers
+ */
+
 if ( ! function_exists('config_path'))
 {
     /**

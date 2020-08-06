@@ -26,10 +26,10 @@ class ShipStationTest extends TestCase
     {
         parent::Setup();
 
-        $this->auths = config('auths.DEV_1');
+        $this->auths = config('auths.SHIPSTATION.DEV_1');
 
-        $this->startDate = config('sscp.SSCP_START_DATE');
-        $this->endDate = config('sscp.SSCP_END_DATE');
+        $this->startDate = config('sscp.CP_ORDERS_START');
+        $this->endDate = config('sscp.CP_ORDERS_END');
 
         $this->shipStation = new ShipStationModelController($this->auths);
 
