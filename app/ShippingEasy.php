@@ -5,12 +5,12 @@ namespace App;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Class ShipStation
+ * Class ShippingEasy
  * @package App
  *
- * NOTE: ShipStation is not a model representing a collection,
- *       but rather a representation of a ShipStation order. This file is used to
- *       define relationships between ControlPad orders and ShipStation orders
+ * NOTE: ShippingEasy is not a model representing a collection,
+ *       but rather a representation of a ShippingEasy order. This file is used to
+ *       define relationships between ControlPad orders and ShippingEasy orders
  */
 class ShippingEasy
 {
@@ -28,19 +28,10 @@ class ShippingEasy
     /****************************************************
      * MUTATORS
      ****************************************************/
-    public function generateRawAuthenticationToken()
-    {
-        return $this->authConfig['ShipStationPublicKey'] . ":" . $this->authConfig['ShipStationPrivateKey'] ;
-    }
-
-    public function encryptRawAuthenticationToken(string $rawToken)
-    {
-        return base64_encode($rawToken);
-    }
 
     public function generateAuthorizationToken()
     {
-        return $this->encryptRawAuthenticationToken($this->generateRawAuthenticationToken());
+        return '';
     }
 
     public function buildHeader()

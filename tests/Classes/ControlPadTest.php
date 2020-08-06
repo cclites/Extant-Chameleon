@@ -26,7 +26,7 @@ class ControlPadTest extends TestCase
     {
         parent::Setup();
 
-        $this->auths = config('auths.DEV_1');
+        $this->auths = config('auths.SHIPSTATION.DEV_1');
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
         $this->controlPad = new ControlPadModelController((array)$this->auths, $this->startDate, $this->endDate );

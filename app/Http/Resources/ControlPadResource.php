@@ -43,6 +43,7 @@ class ControlPadResource extends JsonResource
     }
 
     /**
+     * transforms a control pad order to a ship station order
      * @param array $order
      * @return array
      */
@@ -114,6 +115,43 @@ class ControlPadResource extends JsonResource
             'number' => $shipment->trackingNumber,
             'url' => Tracking::getTrackingUrl($shipment),
             'shipped_at' => $shipment->shipDate,
+        ];
+    }
+
+    /**
+     * @param array $order
+     * @return array
+     */
+    public static function transformCPOrderToSEOrder($order): array
+    {
+        $order = collect($order)->all();
+
+        $items = [];
+        $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
+
+        if( array_key_exists('lines', $order)){
+            $items = collect($order['lines'])->map(function($line) use($customerUserName){
+                return self::transformCPOrderItemToSSOrderItem(collect($line)->toArray(), $customerUserName);
+            });
+        }else{
+            \Log::error('Order has no items');
+            \Log::info(json_encode($order));
+            die();
+        }
+
+        return [
+            'orderNumber' => $order['id'],
+            'orderKey' => $order['receipt_id'],
+            'orderDate' => $order['created_at'],
+            'orderStatus' => 'awaiting_shipment',
+            'orderTotal' => $order['total_price'],
+            'taxAmount' => $order['total_tax'],
+            'amountPaid' => 0, //TODO:: Figure out which parameter to use here
+            'shippingAmount' => $order['total_shipping'],
+            'billTo' => self::transformCPAddressToSSAddress((array)$order['billing_address'], $customerUserName),
+            'shipTo' => self::transformCPAddressToSSAddress((array)$order['shipping_address'], $customerUserName),
+            'customerUsername' => $customerUserName,
+            'items' => $items
         ];
     }
 }

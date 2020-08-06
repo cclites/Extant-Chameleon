@@ -4,15 +4,12 @@ namespace App\DataModelControllers;
 
 use App\ControlPad;
 use App\Http\Resources\ControlPadResource;
-use App\ShipStation;
+use App\ShippingEasy;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Arr;
+
 
 /**
  * Class ShipStationDataModel
@@ -31,7 +28,7 @@ class ShippingEasyModelController extends BaseDataModelController
     public $maxAllowedRequests;
     public $remainingRequests;
     public $secondsUntilReset;
-    public $shipStation;
+    public $shippingEasy;
     public $headers;
     public $client;
 
@@ -39,7 +36,12 @@ class ShippingEasyModelController extends BaseDataModelController
     {
         parent::boot();
 
+        ShippingEasy::setApiKey($authConfig['ApiKey']);
+        ShippingEasy::setApiSecret($authConfig['ApiKey']);
+
+        /*
         $shipStation = new ShipStation();
+
 
         $this->headers = $shipStation->getHeader($authConfig);
 
@@ -48,6 +50,7 @@ class ShippingEasyModelController extends BaseDataModelController
                 'base_uri' => config('sscp.SS_BASE_PATH'),
                 'headers' => $this->headers
             ]);
+        */
     }
 
     /**

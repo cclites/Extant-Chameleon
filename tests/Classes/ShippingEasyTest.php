@@ -6,33 +6,33 @@ use Tests\TestCase;
 use GuzzleHttp\Client;
 
 use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\DataModelControllers\ShippingEasyModelController;
 
 use SsOrderFactory;
 use CpOrderFactory;
 use Carbon\Carbon;
 
 
-class ShipStationTest extends TestCase
+class ShippingEasyTest extends TestCase
 {
     public $startDate;
     public $endDate;
     public $controlPad;
-    public $shipStation;
+    public $shippingEasy;
     public $client;
 
     public function setUp() : void
     {
         parent::Setup();
 
-        $auths = config('auths.SHIPSTATION.DEV_1');
+        $auths = config('auths.SHIPPINGEASY.DEV_1');
 
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
 
-        $this->shipStation = new ShipStationModelController($auths);
+        $this->shippingEasy = new ShippingEasyModelController($auths);
 
-        $this->client = new Client(['base_uri' => config('sscp.SS_BASE_PATH'), 'headers' => $this->shipStation->headers]);
+        $this->client = new Client(['base_uri' => config('sscp.SE_BASE_PATH'), 'headers' => $this->shippingEasy->headers]);
     }
 
     //NOTE: credentials for posting to ShipStation are invalid as of 8/1/2020

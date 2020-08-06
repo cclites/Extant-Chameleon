@@ -1,6 +1,6 @@
 <?php
 
-require(dirname(__FILE__) . 'integration_wrappers/ShippingEasy/lib/ShippingEasy.php');
+require('integration_wrappers/ShippingEasy/lib/ShippingEasy.php');
 
 /**
  * NOTE: This is necessary because Lumen does not have the
