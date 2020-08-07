@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 
 use App\DataModelControllers\ControlPadModelController;
 use App\DataModelControllers\ShipStationModelController;
-use App\Libraries\TrackingFactory;
+use App\Libraries\ControlPadTrackingFactory;
 
 
 /**

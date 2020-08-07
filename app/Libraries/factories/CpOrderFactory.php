@@ -1,10 +1,8 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-use Faker\Factory;
+namespace App\Libraries\factories;
 
-use App\Libraries\AddressFactory;
-use App\Libraries\OrderLinesFactory;
+use Faker\Factory;
 
 class CpOrderFactory{
 
@@ -12,8 +10,7 @@ class CpOrderFactory{
     {
         $faker = Factory::create();
 
-        $lines = OrderLinesFactory::create();
-        //$lines = [];
+        $lines = ControlPadLineItemsFactory::create();
 
         return [
             'id' => $faker->randomNumber(2),

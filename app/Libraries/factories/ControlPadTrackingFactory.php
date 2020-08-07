@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Libraries;
+namespace App\Libraries\factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 use Faker\Factory;
 
 
-class TrackingFactory{
+class ControlPadTrackingFactory{
 
     public static function create(?object $order = null)
     {

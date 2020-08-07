@@ -1,10 +1,7 @@
 <?php
 
-namespace App\Libraries;
+namespace App\Libraries\factories;
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-
-use App\Address;
 use Faker\Factory as Faker;
 
 class ItemOptionsFactory{

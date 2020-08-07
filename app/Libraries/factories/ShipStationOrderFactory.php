@@ -1,11 +1,10 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
-use Faker\Factory;
-use App\Libraries\AddressFactory;
-use App\Libraries\OrderLinesFactory;
+namespace App\Libraries\factories;
 
-class SsOrderFactory{
+use Faker\Factory;
+
+class ShipStationOrderFactory{
 
     /*
      * Valid values for orderStatus:

@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 
 use App\DataModelControllers\ControlPadModelController;
 use App\DataModelControllers\ShipStationModelController;
-use App\Libraries\TrackingFactory;
+use App\Libraries\ControlPadTrackingFactory;
 
 
 /**
@@ -117,7 +117,7 @@ class AddTrackingTest extends Command
         echo "\nOrder status " . $order->status . "\n";
 
         //Now add tracking info
-        $trackingData = TrackingFactory::create($order);
+        $trackingData = ControlPadTrackingFactory::create($order);
 
         //Find the result I need
         //echo "\n" . json_encode($trackingData) . "\n";

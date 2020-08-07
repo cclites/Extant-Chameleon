@@ -7,9 +7,8 @@ use GuzzleHttp\Client;
 
 use App\DataModelControllers\ControlPadModelController;
 use App\DataModelControllers\ShipStationModelController;
+use App\Libraries\factories\CpOrderFactory;
 
-use SsOrderFactory;
-use CpOrderFactory;
 use Carbon\Carbon;
 
 

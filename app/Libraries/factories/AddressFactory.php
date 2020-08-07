@@ -1,8 +1,5 @@
 <?php
-
-namespace App\Libraries;
-
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace App\Libraries\factories;
 
 use Faker\Factory;
 
@@ -37,22 +34,4 @@ class AddressFactory{
         ];
     }
 
-    /*
-    public static function createAddress(): array
-    {
-        $faker = Faker::create();
-
-        return [
-            'name' => $faker->name,
-            'company' => $faker->company,
-            'street1'=> $faker->streetAddress,
-            'street2'=> $faker->secondaryAddress,
-            'street3' => '',
-            'city'=> $faker->city,
-            'state'=>$faker->state,
-            'postalCode' => $faker->postcode,
-            'country' => 'US',
-            'phone' => $faker->phoneNumber,
-        ];
-    }*/
 }

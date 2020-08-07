@@ -1,9 +1,9 @@
 <?php
-namespace App\Libraries;
+namespace App\Libraries\factories;
 
 use Faker\Factory;
 
-class OrderLinesFactory{
+class ControlPadLineItemsFactory{
 
     public static function create()
     {
