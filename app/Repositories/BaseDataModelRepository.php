@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\DataModelControllers;
+namespace App\Repositories;
 
 
 use App\ControlPad;
 
-class BaseDataModelController
+class BaseDataModelRepository
 {
     protected $CpBasePath;
     protected $CpApiKey;

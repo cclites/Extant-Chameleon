@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use App\ControlPad;
 use App\User;
 use Carbon\Carbon;
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShipStationRepository;
 
 /**
  * Class ControlPanelToShipStation
@@ -67,15 +67,17 @@ class ControlPanelToShipStation extends Command
         $clients = config('auths.CLIENTS');
 
         foreach($clients as $client){
+            $client->auths = json_encode(config('auths.SHIPSTATION.' . $client));
             $this->processOrders($client);
         }
     }
 
     public function processOrders($client)
     {
-        $authConfig = config('auths.' . $client);
-        $shipStation = new ShipStationModelController($authConfig);
-        $controlPad = new ControlPadModelController($authConfig, $this->startDate, $this->endDate);
+        $authConfig =  $client->authConfigs;
+
+        $shipStation = new ShipStationRepository($authConfig);
+        $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
 
         //**************************************************
         // 1. Get unfulfilled orders from ControlPad

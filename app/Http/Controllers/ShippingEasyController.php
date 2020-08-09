@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShippingEasyModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShippingEasyRepository;
 
 
 class ShippingEasyController extends BaseController
@@ -28,7 +28,7 @@ class ShippingEasyController extends BaseController
             $url = $request->resource_url;
 
             $shipStation = new ShipStationModelController($authConfig);
-            $controlPad = new ControlPadModelController($authConfig, null, null);
+            $controlPad = new ControlPadRepository($authConfig, null, null);
 
             $trackingItems = $shipStation->getTrackingResources($url);
             $ids = collect($trackingItems)->pluck('order_id')->toArray();

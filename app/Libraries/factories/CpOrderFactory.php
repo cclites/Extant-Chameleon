@@ -10,8 +10,6 @@ class CpOrderFactory{
     {
         $faker = Factory::create();
 
-        $lines = ControlPadLineItemsFactory::create();
-
         return [
             'id' => $faker->randomNumber(2),
             'total_price' => 55.55,
@@ -24,7 +22,7 @@ class CpOrderFactory{
             'created_at' => \Carbon\Carbon::now(),
             'billing_address' => AddressFactory::cpCreate(),
             'shipping_address' => AddressFactory::cpCreate(),
-            'lines' => $lines,
+            'lines' => ControlPadLineItemsFactory::create(),
         ];
     }
 

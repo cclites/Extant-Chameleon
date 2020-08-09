@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use App\ControlPad;
 use App\User;
 use Carbon\Carbon;
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShippingEasyModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShippingEasyRepository;
 
 /**
  * Class ControlPanelToShipStation
@@ -74,8 +74,8 @@ class ControlPanelToShippingEasy extends Command
     public function processOrders($client)
     {
         $authConfig = config('auths.' . $client);
-        $shippingEasy = new ShippingEasyModelController($authConfig);
-        $controlPad = new ControlPadModelController($authConfig, $this->startDate, $this->endDate);
+        $shippingEasy = new ShippingEasyRepository($authConfig);
+        $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
 
         //**************************************************
         // 1. Get unfulfilled orders from ControlPad
@@ -105,9 +105,8 @@ class ControlPanelToShippingEasy extends Command
         echo "Id array is populated.\n";
 
         //**************************************************
-        // 3. Convert CP Order data to SS order data
+        // 3. Convert CP Order data to SE order data
         //**************************************************
-        //TODO:
         $transformedOrders = $shippingEasy->formatOrders($orders->data);
 
         if(!$transformedOrders){

@@ -3,6 +3,7 @@
 use Tests\TestCase;
 use GuzzleHttp\Client;
 use App\Libraries\factories\ShippingEasyOrderFactory;
+use App\Repositories\ShippingEasyRepository;
 use Carbon\Carbon;
 
 
@@ -17,12 +18,18 @@ class ShippingEasyTest extends TestCase
     {
         parent::Setup();
 
+        require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
+
         $auths = config('auths.SHIPPINGEASY.DEV_1');
 
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
 
         $this->shippingEasy = ShippingEasyOrderFactory::create();
+
+        ShippingEasy::setApiKey($auths['ApiKey']);
+        ShippingEasy::setApiSecret($auths['ApiSecret']);
+
     }
 
     public function test_can_create_shipping_easy(): void

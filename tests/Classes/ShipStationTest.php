@@ -5,8 +5,8 @@ namespace Classes;
 use Tests\TestCase;
 use GuzzleHttp\Client;
 
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShipStationRepository;
 use App\Libraries\factories\CpOrderFactory;
 
 use Carbon\Carbon;
@@ -14,25 +14,25 @@ use Carbon\Carbon;
 
 class ShipStationTest extends TestCase
 {
-    public $startDate;
-    public $endDate;
-    public $controlPad;
-    public $shipStation;
+
+    public $shipStationRepository;
+    public $controlPadRepository;
     public $client;
+    public $address;
 
     public function setUp() : void
     {
         parent::Setup();
 
         $auths = config('auths.SHIPSTATION.DEV_1');
-
-        $this->startDate = config('sscp.CP_ORDERS_START');
-        $this->endDate = config('sscp.CP_ORDERS_END');
-
-        $this->shipStation = new ShipStationModelController($auths);
-
-        $this->client = new Client(['base_uri' => config('sscp.SS_BASE_PATH'), 'headers' => $this->shipStation->headers]);
+        $this->shipStationRepository = new ShipStationRepository($auths);
     }
+
+    public function test_can_create_ship_station_repo(): void
+    {
+        $this->assertNotNull($this->shipStationRepository);
+    }
+
 
     //NOTE: credentials for posting to ShipStation are invalid as of 8/1/2020
     /*
@@ -56,18 +56,5 @@ class ShipStationTest extends TestCase
         $this->assertTrue($response);
     }
     */
-
-    public function testCanConvertCpOrderToSsOrder(): void
-    {
-        $cpOrder = CpOrderFactory::create();
-        $convertedOrder = $this->shipStation->formatOrders([collect($cpOrder)]);
-
-        if($convertedOrder[0]['shipTo']){
-            $this->assertTrue(true);
-            return;
-        }
-
-        $this->assertTrue(false);
-    }
-
 }
+

@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShipStationRepository;
 use App\Libraries\ControlPadTrackingFactory;
 
 
@@ -33,12 +33,12 @@ class AddTrackingTest extends Command
     public $endDate;
 
     /**
-     * @var ControlPadModelController
+     * @var ControlPadRepository
      */
     public $controlPad;
 
     /**
-     * @var ShipStationModelController
+     * @var ShipStationRepository
      */
     public $shipStation;
 
@@ -97,8 +97,8 @@ class AddTrackingTest extends Command
 
         $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
         $this->endDate = Carbon::now();
-        $this->controlPad = new ControlPadModelController($authConfigs, $this->startDate, $this->endDate);
-        $this->shipStation = new ShipStationModelController($authConfigs);
+        $this->controlPad = new ControlPadRepository($authConfigs, $this->startDate, $this->endDate);
+        $this->shipStation = new ShipStationRepository($authConfigs);
         $this->headers = $this->shipStation->headers;
 
         $this->client = new Client();

@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShipStationRepository;
 use App\Libraries\ControlPadTrackingFactory;
 
 
@@ -33,12 +33,12 @@ class Test extends Command
     public $endDate;
 
     /**
-     * @var ControlPadModelController
+     * @var ControlPadRepository
      */
     public $controlPad;
 
     /**
-     * @var ShipStationModelController
+     * @var ShipStationRepository
      */
     public $shipStation;
 

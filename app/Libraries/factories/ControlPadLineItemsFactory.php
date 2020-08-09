@@ -7,17 +7,18 @@ class ControlPadLineItemsFactory{
 
     public static function create()
     {
-
         $faker = Factory::create();
 
-        return [
-            'lineItemKey' => $faker->word . "-" . $faker->randomNumber(2),
-            'sku' => $faker->password(9),
+        $data = [
+            'id' => '9999',
+            'manufacturer_sku' => $faker->password(9),
             'name' => $faker->name(),
-            'quantity' => $faker->randomNumber(4),
-            'unitPrice' => number_format($faker->randomNumber(4), 2),
-            'createDate' => $faker->date(),
+            'quantity' => $faker->randomNumber(3),
+            'price' => number_format($faker->randomNumber(2), 2),
+            'created_at' => $faker->date(),
         ];
+
+        return [$data];
     }
 
 

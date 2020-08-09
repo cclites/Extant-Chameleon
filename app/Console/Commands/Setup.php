@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\DataModelControllers\ShipStationModelController;
+use App\Repositories\ShipStationRepository;
 
 
 /**
@@ -17,7 +17,7 @@ use App\DataModelControllers\ShipStationModelController;
 class Setup extends Command
 {
     /**
-     * @var ShipStationModelController
+     * @var ShipStationRepository
      */
     public $shipStation;
 
@@ -44,7 +44,7 @@ class Setup extends Command
     {
         parent::__construct();
 
-        $this->shipStation = new ShipStationModelController(config('auths.DEV_1'));
+        $this->shipStation = new ShipStationRepository(config('auths.DEV_1'));
     }
 
     /**

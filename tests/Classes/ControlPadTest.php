@@ -2,8 +2,8 @@
 
 require 'vendor/autoload.php';
 
-use App\DataModelControllers\ControlPadModelController;
-use App\DataModelControllers\ShipStationModelController;
+use App\Repositories\ControlPadRepository;
+use App\Repositories\ShipStationRepository;
 use App\User;
 use Carbon\Carbon;
 use Tests\TestCase;
@@ -29,11 +29,11 @@ class ControlPadTest extends TestCase
         $this->auths = config('auths.SHIPSTATION.DEV_1');
         $this->startDate = config('sscp.SSCP_START_DATE');
         $this->endDate = config('sscp.SSCP_END_DATE');
-        $this->controlPad = new ControlPadModelController((array)$this->auths, $this->startDate, $this->endDate );
-        $this->shipStation = new ShipStationModelController($this->auths);
+        $this->controlPad = new ControlPadRepository((array)$this->auths, $this->startDate, $this->endDate );
+        $this->shipStation = new ShipStationRepository($this->auths);
     }
 
-    public function testCanGetTestCpOrders()
+    public function test_can_get_cp_orders()
     {
         $orders = $this->controlPad->get('pending');
         $pass = false;
@@ -45,7 +45,7 @@ class ControlPadTest extends TestCase
         $this->assertTrue($pass);
     }
 
-    public function testCanUpdateTestCpOrder(): void
+    public function test_can_update_test_cp_order(): void
     {
         $orders = $this->controlPad->get('pending');
 

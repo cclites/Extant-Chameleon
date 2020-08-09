@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataModelControllers;
+namespace App\Repositories;
 
 use App\ControlPad;
 use Carbon\Carbon;
@@ -20,7 +20,7 @@ use phpDocumentor\Reflection\Types\Boolean;
  * @function get (get CP orders)
  * @function path (update CP orders)
  */
-class ControlPadModelController extends BaseDataModelController
+class ControlPadRepository extends BaseDataModelRepository
 {
     public $startDate;
     public $endDate;
