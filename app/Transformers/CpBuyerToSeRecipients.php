@@ -12,17 +12,18 @@ class CpBuyerToSeRecipients
     {
         $lineItems = ControlPadResource::transformCPOrderItemToSEOrderItem($order['lines']);
 
-        if(is_object($order['shipping_address'])){
+        /**
+         * This is a workaround to handle the difference between a test address
+         * and an actual order from CP. Test addresses always come back as an array,
+         * CP addresses are parsed as objects.
+         */
+        if(is_object($order['shipping_address'])){ // Is CP address object
             $shippingAddress = (array)$order['shipping_address'];
-        }else{
+        }else{ // Is test address object
             $shippingAddress = $order['shipping_address'][0];
         }
 
-        $address2 = '';
-
-        if(array_key_exists('line_2', $shippingAddress)){
-            $address2 = $shippingAddress['line_2'];
-        }
+        $address2 = array_key_exists('line_2', $shippingAddress) ? $shippingAddress['line_2'] : '';
 
         return [
             'company' => $order['buyer_first_name'] . " " . $order['buyer_last_name'],

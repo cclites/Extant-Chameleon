@@ -116,6 +116,7 @@ $app->router->group([
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
     require __DIR__.'/../routes/shipstation.php';
+    require __DIR__.'/../routes/shippingeasy.php';
 });
 
 return $app;

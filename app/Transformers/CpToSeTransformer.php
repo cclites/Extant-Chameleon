@@ -22,17 +22,18 @@ class CpToSeTransformer
             die();
         }
 
-        if(is_object($order['billing_address'])){
+        /**
+         * This is a workaround to handle the difference between a test address
+         * and an actual order from CP. Test addresses always come back as an array,
+         * CP addresses are parsed as objects.
+         */
+        if(is_object($order['billing_address'])){  // Is CP address object
             $billingAddress = (array)$order['billing_address'];
-        }else{
+        }else{ // Is test address object
             $billingAddress = $order['billing_address'][0];
         }
 
-        $address2 = '';
-
-        if(array_key_exists('line_2', $billingAddress)){
-            $address2 = $billingAddress['line_2'];
-        }
+        $address2 = array_key_exists('line_2', $billingAddress) ? $billingAddress['line_2'] : '';
 
         return [
             'external_order_identifier' => $order['id'],

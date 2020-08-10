@@ -60,8 +60,6 @@ class ControlPanelToShippingEasy extends Command
         $this->endDate = config('sscp.CP_ORDERS_END');
 
         require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
-
-
     }
 
     /**
@@ -96,8 +94,6 @@ class ControlPanelToShippingEasy extends Command
         //**************************************************
         $orders = $controlPad
                     ->get(ControlPad::DEFAULT_STATUS);
-
-
 
         if(!$orders->data){
             echo "There are no orders to update\n";

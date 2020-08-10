@@ -20,7 +20,7 @@ class ShippingEasyController extends BaseController
     {
         if($request->shipment){
 
-            $authConfig = config('auths.SHIPPINGEASY'.$client);
+            $authConfig = config('auths.SHIPPINGEASY.' . strtoupper($client) );
 
             if (!$authConfig) {
                 \Log::warning('ShippingEasyController::notifyShipped client config not found', ['client' => $client]);
