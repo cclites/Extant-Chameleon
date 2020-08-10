@@ -18,6 +18,8 @@ class ShippingEasyController extends BaseController
      */
     public function notifyShipped(Request $request, $client)
     {
+        \Log::info(json_encode($request->all()));
+
         if($request->shipment){
 
             $authConfig = config('auths.SHIPPINGEASY.' . strtoupper($client) );
