@@ -18,13 +18,18 @@ class ShippingEasyController extends BaseController
      */
     public function notifyShipped(Request $request, $client)
     {
-        if($request->resource_url){
-            $authConfig = config('auths.'.$client);
+        if($request->shipment){
+
+            $authConfig = config('auths.SHIPPINGEASY'.$client);
+
             if (!$authConfig) {
                 \Log::warning('ShippingEasyController::notifyShipped client config not found', ['client' => $client]);
                 abort(409, 'Client not configured');
             }
 
+            //generate the tracking url
+
+            /*
             $url = $request->resource_url;
 
             $shipStation = new ShipStationModelController($authConfig);
@@ -35,10 +40,10 @@ class ShippingEasyController extends BaseController
             /***************************************************************/
 
             //Add tracking
-            $controlPad->addTracking($trackingItems->toArray());
+            //$controlPad->addTracking($trackingItems->toArray());
 
             //Update control pad orders
-            $controlPad->patch($ids, 'fulfilled');
+            //$controlPad->patch($ids, 'fulfilled');
         }
 
         return response()->json(['message' => 'Notify shipped']);

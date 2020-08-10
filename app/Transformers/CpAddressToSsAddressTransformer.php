@@ -12,6 +12,8 @@ class CpAddressToSsAddressTransformer
      */
     public static function transform(array $cpAddress, string $customerName)
     {
+        $cpAddress = $cpAddress[0];
+
         return [
             'name' => $customerName,
             'street1' => $cpAddress['line_1'],

@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Repositories\ControlPadRepository;
 use App\Repositories\ShippingEasyRepository;
 
+
 /**
  * Class ControlPanelToShipStation
  *
@@ -30,6 +31,8 @@ class ControlPanelToShippingEasy extends Command
      * @var Carbon
      */
     public $endDate;
+
+    public $authConfigs;
 
     /**
      * The name and signature of the console command.
@@ -55,6 +58,10 @@ class ControlPanelToShippingEasy extends Command
         parent::__construct();
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
+
+        require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
+
+
     }
 
     /**
@@ -67,13 +74,20 @@ class ControlPanelToShippingEasy extends Command
         $clients = config('auths.CLIENTS.SHIPPINGEASY');
 
         foreach($clients as $client){
+
+            $this->authConfigs = config('auths.SHIPPINGEASY.' . $client);
+
+            \ShippingEasy::setApiKey($this->authConfigs['ApiKey']);
+            \ShippingEasy::setApiSecret($this->authConfigs['ApiSecret']);
+
             $this->processOrders($client);
         }
+
     }
 
     public function processOrders($client)
     {
-        $authConfig = config('auths.' . $client);
+        $authConfig = $this->authConfigs;
         $shippingEasy = new ShippingEasyRepository($authConfig);
         $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
 
@@ -82,6 +96,8 @@ class ControlPanelToShippingEasy extends Command
         //**************************************************
         $orders = $controlPad
                     ->get(ControlPad::DEFAULT_STATUS);
+
+
 
         if(!$orders->data){
             echo "There are no orders to update\n";
@@ -115,21 +131,24 @@ class ControlPanelToShippingEasy extends Command
             return false;
         }
 
+        echo "Orders have been transformed.\n";
+
         //**************************************************
-        // 4. Post orders to ShipStation
+        // 4. Post orders to ShippingEasy
         //**************************************************
         $response = $shippingEasy->post($transformedOrders);
 
+
         if(!$response){
-            echo "No response when posting orders to ShipStation.\n";
-            \Log::error("No response when posting orders to ShipStation.");
+            echo "No response when posting orders to ShippingEasy.\n";
+            \Log::error("No response when posting orders to ShippingEasy.");
             return false;
         }
 
         //**************************************************
         // 5. Update ControlPad orders tp status_pending
         //**************************************************
-        $controlPad->patch($ids);
+        //$controlPad->patch($ids);
 
         return true;
     }

@@ -18,7 +18,7 @@ class ShippingEasyTest extends TestCase
     {
         parent::Setup();
 
-        require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
+        //require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
 
         $auths = config('auths.SHIPPINGEASY.DEV_1');
 
@@ -27,8 +27,7 @@ class ShippingEasyTest extends TestCase
 
         $this->shippingEasy = ShippingEasyOrderFactory::create();
 
-        ShippingEasy::setApiKey($auths['ApiKey']);
-        ShippingEasy::setApiSecret($auths['ApiSecret']);
+
 
     }
 

@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\ControlPanelToShipStation::class,
+        Commands\ControlPanelToShippingEasy::class,
         Commands\Test::class,
         Commands\Setup::class,
     ];
@@ -27,5 +28,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('cron:process-cp-to-ss')->withoutOverlapping()->everyFifteenMinutes();
+        $schedule->command('cron:process-cp-to-se')->withoutOverlapping()->everyFifteenMinutes();
     }
 }

@@ -7,9 +7,15 @@ class CpOrderItemToSeOrderItemTransformer
 {
     public static function transform($items): array
     {
+
         $data = [];
 
         foreach($items as $item){
+
+
+            $item = collect($item)->toArray();
+
+            //die(json_encode($item) . "\n");
 
             $data[] = [
                 'ext_line_item_id' => $item['id'],

@@ -38,8 +38,12 @@ class ControlPadResource extends JsonResource
      * @param array $order
      * @return array
      */
-    public static function transformCPOrderToSSOrder(array $orders): array
+    public static function transformCPOrderToSSOrder($orders): array
     {
+        if(!is_array($orders)){
+            $orders = array($orders);
+        }
+
         return CpToSsTransformer::transform($orders);
     }
 
@@ -54,12 +58,22 @@ class ControlPadResource extends JsonResource
      * @param $url
      * @return array
      */
-    public static function createTrackingForShipment($shipment)
+    public static function createTrackingForShipmentFromSS($shipment)
     {
         return [
             'order_id' => $shipment->orderNumber,
             'number' => $shipment->trackingNumber,
-            'url' => Tracking::getTrackingUrl($shipment),
+            'url' => Tracking::getTrackingUrlforSS($shipment),
+            'shipped_at' => $shipment->shipDate,
+        ];
+    }
+
+    public static function createTrackingForShipmentFromSE($shipment)
+    {
+        return [
+            'order_id' => $shipment->orderNumber,
+            'number' => $shipment->tracking_number,
+            'url' => Tracking::getTrackingUrlForSE($shipment),
             'shipped_at' => $shipment->shipDate,
         ];
     }
@@ -79,6 +93,7 @@ class ControlPadResource extends JsonResource
         }
 
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
+
         return CpToSeTransformer::transform($order, $customerUserName);
 
     }

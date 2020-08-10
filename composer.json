@@ -24,7 +24,8 @@
             "App\\": "app/"
         },
         "files": [
-            "app/Libraries/helpers.php"
+            "app/Libraries/helpers.php",
+            "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php"
         ]
     },
     "autoload-dev": {

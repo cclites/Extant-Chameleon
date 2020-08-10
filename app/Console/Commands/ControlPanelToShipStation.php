@@ -32,6 +32,11 @@ class ControlPanelToShipStation extends Command
     public $endDate;
 
     /**
+     * @var array
+     */
+    public $authConfigs;
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -64,20 +69,20 @@ class ControlPanelToShipStation extends Command
      */
     public function handle()
     {
-        $clients = config('auths.CLIENTS');
+        $clients = config('auths.CLIENTS.SHIPSTATION');
 
         foreach($clients as $client){
-            $client->auths = json_encode(config('auths.SHIPSTATION.' . $client));
+
+            $this->authConfigs = config('auths.SHIPSTATION.' . $client);
             $this->processOrders($client);
         }
     }
 
     public function processOrders($client)
     {
-        $authConfig =  $client->authConfigs;
 
-        $shipStation = new ShipStationRepository($authConfig);
-        $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
+        $shipStation = new ShipStationRepository($this->authConfigs);
+        $controlPad = new ControlPadRepository($this->authConfigs, $this->startDate, $this->endDate);
 
         //**************************************************
         // 1. Get unfulfilled orders from ControlPad
@@ -109,7 +114,10 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 3. Convert CP Order data to SS order data
         //**************************************************
-        $transformedOrders = $shipStation->formatOrders($orders->data);
+
+        $data = collect($orders)->flatten();
+
+        $transformedOrders = $shipStation->formatOrders($data);
 
         if(!$transformedOrders){
             echo "Unable to process transformed orders.\n";

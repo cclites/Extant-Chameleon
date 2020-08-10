@@ -121,6 +121,34 @@ class ControlPadRepository extends BaseDataModelRepository
     }
 
     /**
+     * @param $trackingItems
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function addTrackingFromSE(array $trackingItems)
+    {
+        $client = new Client();
+
+        try{
+            foreach($trackingItems as $item){
+
+                $result = $client->request(
+                    'POST',
+                    $this->CpBasePath . '/tracking/',
+                    [
+                        'json' => $item,
+                        'headers' => $this->headers
+                    ]
+                );
+
+                return $result->getBody()->getContents();
+            }
+        }catch (GuzzleException $e){
+            \Log::error($e, ['fingerprint' => 'Unable to add Tracking to order', 'item' => $item]);
+            return ['fingerprint' => 'Unable to add Tracking to order', 'item' => $item];
+        }
+    }
+
+    /**
      * @param string $webhook
      * @return bool
      */

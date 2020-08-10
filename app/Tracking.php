@@ -11,7 +11,7 @@ use Laravel\Lumen\Auth\Authorizable;
 
 class Tracking
 {
-    public static function getTrackingUrl($shipment){
+    public static function getTrackingUrlForSS($shipment){
 
         $tracking = config('sscp.SHIPSTATION_TRACKING_URLS');
 
@@ -21,6 +21,22 @@ class Tracking
             return $tracking['UPS'] . $shipment->trackingNumber;
         }elseif(Str::contains($shipment->serviceCode, 'fedex')){
             return $tracking['FEDEX'] . $shipment->trackingNumber;
+        }else{
+            return "No tracking info available for " . $shipment->serviceCode;
+        }
+
+    }
+
+    public static function getTrackingUrlForSe($shipment){
+
+        $tracking = config('sscp.SHIPSTATION_TRACKING_URLS');
+
+        if(Str::contains($shipment->serviceCode, 'USPS')){
+            return $tracking['USPS'] . $shipment->tracking_number;
+        }else if(Str::contains($shipment->serviceCode, 'UPS')){
+            return $tracking['UPS'] . $shipment->tracking_number;
+        }elseif(Str::contains($shipment->serviceCode, 'FEDEX')){
+            return $tracking['FEDEX'] . $shipment->tracking_number;
         }else{
             return "No tracking info available for " . $shipment->serviceCode;
         }

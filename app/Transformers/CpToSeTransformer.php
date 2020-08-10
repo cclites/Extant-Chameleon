@@ -3,6 +3,7 @@
 
 namespace App\Transformers;
 
+use Illuminate\Support\Arr;
 
 use App\Http\Resources\ControlPadResource;
 
@@ -21,6 +22,18 @@ class CpToSeTransformer
             die();
         }
 
+        if(is_object($order['billing_address'])){
+            $billingAddress = (array)$order['billing_address'];
+        }else{
+            $billingAddress = $order['billing_address'][0];
+        }
+
+        $address2 = '';
+
+        if(array_key_exists('line_2', $billingAddress)){
+            $address2 = $billingAddress['line_2'];
+        }
+
         return [
             'external_order_identifier' => $order['id'],
             'alternate_order_id' => $order['receipt_id'],
@@ -31,13 +44,13 @@ class CpToSeTransformer
             'shipping_cost_including_tax' => $order['total_shipping'],
             'billing_first_name' => $customerName,
             'billing_last_name' => $customerName,
-            'billing_address' => $order['billing_address']['line_1'],
-            'billing_address_2' => $order['billing_address']['line_2'],
-            'billing_city' => $order['billing_address']['city'],
-            'billing_state' => $order['billing_address']['state'],
-            'billing_postal_code' => $order['billing_address']['zip'],
+            'billing_address' => $billingAddress['line_1'],
+            'billing_address_2' => $address2,
+            'billing_city' => $billingAddress['city'],
+            'billing_state' => $billingAddress['state'],
+            'billing_postal_code' => $billingAddress['zip'],
             'billing_country' => 'US', //TODO: If users from other countries come on board, this will need to be changed to a field.
-            'recipients' => ControlPadResource::transformCPRecipientToSERecipient($order),
+            'recipients' => [ControlPadResource::transformCPRecipientToSERecipient($order)],
         ];
     }
 }

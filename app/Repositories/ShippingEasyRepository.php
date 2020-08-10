@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\ControlPad;
 use App\Http\Resources\ControlPadResource;
+use App\ShippingEasy;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -23,18 +24,18 @@ use GuzzleHttp\Psr7\Response;
  */
 class ShippingEasyRepository extends BaseDataModelRepository
 {
-
     public $maxAllowedRequests;
     public $remainingRequests;
     public $secondsUntilReset;
     public $shippingEasy;
     public $headers;
     public $client;
+    public $authConfig;
 
     public function __construct($authConfig)
     {
         parent::boot();
-
+        $this->authConfig = $authConfig;
     }
 
     /**
@@ -43,31 +44,14 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function post($orders): bool
     {
-        foreach( collect($orders)->chunk(ShippingEasyModel::MAX_ORDERS_PER_CLIENT) as $order ){
+        foreach(collect($orders)->chunk(ShippingEasy::MAX_ORDERS_PER_CLIENT) as $order){
 
-            /*
-            try{
-                $this->client->post('orders/createorders',
-                    [
-                        'json' => $order->values()->toArray()
-                    ]
-                );
-             }catch (GuzzleException $e){
-                \Log::info($e->getMessage());
-                \Log::error("Unable to create Shipstation orders");
-                return false;
-            }*/
+            $order = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
+            $res = $order->create();
         }
 
         return true;
     }
-
-    public function registerClient($data)
-    {
-        //TODO:: Placeholder for when the ability to register
-        //       clients with ShipStation is allowed.
-    }
-
 
     /**
      * Get order information from ShipStation
@@ -84,7 +68,7 @@ class ShippingEasyRepository extends BaseDataModelRepository
         );
         $responseBody = json_decode($response->getBody());
         return collect($responseBody->shipments)->map(function($shipment) {
-            return ControlPadResource::createTrackingForShipment($shipment);
+            return ControlPadResource::createTrackingForShipmentFromSE($shipment);
         });
     }
 
@@ -116,16 +100,15 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function formatOrders(array $orders)
     {
-        /*
         if(!filled($orders)){
             \Log::error("There really should be orders here");
             die();
         }
 
         return collect($orders)->map(function($order){
-            return ControlPadResource::transformCPOrderToSSOrder($order);
+            return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
         });
-        */
+
     }
 
     /**
