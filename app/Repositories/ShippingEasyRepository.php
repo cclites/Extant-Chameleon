@@ -39,15 +39,16 @@ class ShippingEasyRepository extends BaseDataModelRepository
     }
 
     /**
+     * Add an order to ShippingEasy
+     *
      * @param $orders
      * @return bool
      */
     public function post($orders): bool
     {
         foreach(collect($orders)->chunk(ShippingEasy::MAX_ORDERS_PER_CLIENT) as $order){
-
             $order = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
-            $res = $order->create();
+            $response = $order->create();
         }
 
         return true;
@@ -62,6 +63,7 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function getTrackingResources(string $path)
     {
+
         $response = $this->client->request(
             'GET',
             $path

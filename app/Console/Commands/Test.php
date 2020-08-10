@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Libraries\factories\ShippingEasyOrderFactory;
+use App\Repositories\ShippingEasyRepository;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -79,6 +81,13 @@ class Test extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->startDate = config('sscp.CP_ORDERS_START');
+        $this->endDate = config('sscp.CP_ORDERS_END');
+
+        $this->authConfigs = config('auths.SHIPPINGEASY.DEV_1');
+
+        require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
     }
 
     /**
@@ -88,6 +97,16 @@ class Test extends Command
      */
     public function handle()
     {
+
+        //Create a fake se order
+        $seOrder = ShippingEasyOrderFactory::create();
+        $shippingEasyRepository = new ShippingEasyRepository($this->authConfigs);
+
+        \ShippingEasy::setApiKey($this->authConfigs['ApiKey']);
+        \ShippingEasy::setApiSecret($this->authConfigs['ApiSecret']);
+
+        $shippingEasyRepository->post($seOrder);
+
 
     }
 }

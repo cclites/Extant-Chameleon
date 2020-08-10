@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ControlPadResource;
+use App\Tracking;
 use Illuminate\Http\Request;
 
 use App\Repositories\ControlPadRepository;
@@ -18,9 +20,10 @@ class ShippingEasyController extends BaseController
      */
     public function notifyShipped(Request $request, $client)
     {
-        \Log::info(json_encode($request->all()));
+        \Log::info($request);
 
-        if($request->shipment){
+
+        if($request->input('orders')){
 
             $authConfig = config('auths.SHIPPINGEASY.' . strtoupper($client) );
 
@@ -29,20 +32,35 @@ class ShippingEasyController extends BaseController
                 abort(409, 'Client not configured');
             }
 
+            $trackingResponse =  Tracking::getTrackingUrlForSe($request->shipping);
+
+            \Log::info(json_encode($trackingResponse));
+
+
+            $tracking = ControlPadResource::createTrackingForShipmentFromSE($request->orders);
+            Log::info(json_encode($tracking));
+
+            $controlPad = new ControlPadRepository($authConfig, null, null);
+            $controlPad->addTracking([$tracking]);
+
+            $orderId = $request->orders[0]->external_order_identifier;
+            Log::info(json_encode($orderId));
+
             //generate the tracking url
+
 
             /*
             $url = $request->resource_url;
 
             $shipStation = new ShipStationModelController($authConfig);
-            $controlPad = new ControlPadRepository($authConfig, null, null);
+
 
             $trackingItems = $shipStation->getTrackingResources($url);
             $ids = collect($trackingItems)->pluck('order_id')->toArray();
             /***************************************************************/
 
             //Add tracking
-            //$controlPad->addTracking($trackingItems->toArray());
+
 
             //Update control pad orders
             //$controlPad->patch($ids, 'fulfilled');
