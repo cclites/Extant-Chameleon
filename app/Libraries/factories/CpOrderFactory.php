@@ -20,8 +20,8 @@ class CpOrderFactory{
             'buyer_last_name'=> $faker->lastName,
             'status' => 'unfulfilled',
             'created_at' => \Carbon\Carbon::now(),
-            'billing_address' => [AddressFactory::cpCreate()],
-            'shipping_address' => [AddressFactory::cpCreate()],
+            'billing_address' => AddressFactory::cpCreate(),
+            'shipping_address' => AddressFactory::cpCreate(),
             'lines' => ControlPadLineItemsFactory::create(),
         ];
     }

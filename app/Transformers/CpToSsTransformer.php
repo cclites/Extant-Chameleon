@@ -11,20 +11,23 @@ class CpToSsTransformer
      * @param $orders
      * @return array
      */
-    public static function transform($order): array
+    public static function transform(array $orders): array
     {
         $data = [];
 
-        //dump($orders);
-        //die("\n");
+        if(array_key_exists('id', $orders)){
+            $orders = [$orders];
+        }
 
-        //foreach($orders as $order){
+        foreach($orders as $order){
 
-
-
+            if(is_object($order)){
+                $order = (array)$order;
+            }
 
             $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
+            //Fix this. Has to be an array of orders.
             if( !array_key_exists('lines', $order)){
                 \Log::error('Order has no items');
                 \Log::info(json_encode($order));
@@ -32,10 +35,11 @@ class CpToSsTransformer
             }
 
             $items = collect($order['lines'])->map(function($line) use($customerUserName){
-                return ControlPadResource::transformCPOrderItemToSSOrderItem($line, $customerUserName);
+                return ControlPadResource::transformCPOrderItemToSSOrderItem((array)$line, $customerUserName);
             });
 
-            return  [
+
+            $data[] =  [
                 'orderNumber' => $order['id'],
                 'orderKey' => $order['receipt_id'],
                 'orderDate' => $order['created_at'],
@@ -50,9 +54,8 @@ class CpToSsTransformer
                 'items' => $items
             ];
 
+        }
 
-        //}
-
-
+        return collect($data[0])->toArray();
     }
 }

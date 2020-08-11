@@ -17,7 +17,7 @@ class ShippingEasyOrderFactory{
         $faker = Factory::create();
         $recipients = ShippingEasyRecipientFactory::create();
 
-        return [
+        $data =  [
             'external_order_identifier' => $faker->randomLetter . "-" . $faker->randomNumber(4),
             'alternate_order_id' => $faker->randomNumber(3),
             'ordered_at' => \Carbon\Carbon::now()->format('m/d/Y'),
@@ -36,5 +36,8 @@ class ShippingEasyOrderFactory{
             'billing_country' => 'US', //TODO: If users from other countries come on board, this will need to be changed to a field.
             'recipients' => [$recipients],
         ];
+
+        //dd($data);
+        return $data;
     }
 }

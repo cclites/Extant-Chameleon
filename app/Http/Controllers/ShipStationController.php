@@ -19,7 +19,7 @@ class ShipStationController extends BaseController
     public function notifyShipped(Request $request, $client)
     {
         if($request->resource_url){
-            $authConfig = config('auths.'.$client);
+            $authConfig = config('auths.SHIPSTATION.'.$client);
             if (!$authConfig) {
                 \Log::warning('ShipStationController::notifyShipped client config not found', ['client' => $client]);
                 abort(409, 'Client not configured');

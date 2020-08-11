@@ -47,7 +47,8 @@ class ShippingEasyRepository extends BaseDataModelRepository
     public function post($orders): bool
     {
         foreach(collect($orders)->chunk(ShippingEasy::MAX_ORDERS_PER_CLIENT) as $order){
-            $order = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
+
+            $order = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order[0]);
             $response = $order->create();
         }
 

@@ -10,7 +10,7 @@ return [
     'CP_DEV_BASE_PATH'=> env('CP_DEV_BASE_PATH'),
     'CP_BASE_PATH'=> env('CP_BASE_PATH'),
 
-    'CP_ORDERS_START' => Carbon::now()->subHours(12),
+    'CP_ORDERS_START' => Carbon::now()->subDays(2),
     //'CP_ORDERS_START' => Carbon::now()->subMinutes(15),
     'CP_ORDERS_END' => Carbon::now(),
 
@@ -29,7 +29,7 @@ return [
     /************************************************************************
      * SHIPPINGEASY CONFIGS
      ************************************************************************/
-    'SS_BASE_PATH'=> env('SE_BASE_PATH'),
+    'SE_BASE_PATH'=> env('SE_BASE_PATH'),
     'SHIPPINGEASY_API_NOTIFICATIONS' => env('SHIPPINGEASY_API_NOTIFICATIONS'),
 ];
 

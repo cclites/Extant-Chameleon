@@ -27,18 +27,18 @@ class Tracking
 
     }
 
-    public static function getTrackingUrlForSe($shipment){
+    public static function getTrackingUrlForSe($order){
 
-        $tracking = config('sscp.SHIPPINGEASY_TRACKING_URLS');
+        $tracking = config('sscp.SHIPSTATION_TRACKING_URLS');
 
-        if(Str::contains($shipment->carrier_key, 'USPS')){
-            return $tracking['USPS'] . $shipment->tracking_number;
-        }else if(Str::contains($shipment->carrier_key, 'UPS')){
-            return $tracking['UPS'] . $shipment->tracking_number;
-        }elseif(Str::contains($shipment->carrier_key, 'FEDEX')){
-            return $tracking['FEDEX'] . $shipment->tracking_number;
+        if(Str::contains($order['carrier_key'], 'USPS')){
+            return $tracking['USPS'] . $order['tracking_number'];
+        }else if(Str::contains($order['carrier_key'], 'UPS')){
+            return $tracking['UPS'] . $order['tracking_number'];
+        }elseif(Str::contains($order['carrier_key'], 'FEDEX')){
+            return $tracking['FEDEX'] . $order['tracking_number'];
         }else{
-            return "No tracking info available for " . $shipment->serviceCode;
+            return "No tracking info available for " . $order->id;
         }
 
     }

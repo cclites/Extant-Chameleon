@@ -59,16 +59,17 @@ class ShipStationRepository extends BaseDataModelRepository
         foreach( collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT) as $order ){
 
             try{
-                $this->client->post('orders/createorders',
+                $response = $this->client->post('orders/createorders',
                     [
-                        'json' => $order->values()->toArray()
+                        'json' => $order
                     ]
                 );
-             }catch (GuzzleException $e){
+
+            }catch (GuzzleException $e){
                 \Log::info($e->getMessage());
                 \Log::error("Unable to create Shipstation orders");
                 return false;
-            }
+           }
         }
 
         return true;
@@ -143,7 +144,7 @@ class ShipStationRepository extends BaseDataModelRepository
      * @param array $orders
      * @return \Illuminate\Support\Collection
      */
-    public function formatOrders(array $orders)
+    public function formatOrders($orders)
     {
         if(!filled($orders)){
             \Log::error("There really should be orders here");

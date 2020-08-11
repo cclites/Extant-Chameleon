@@ -114,10 +114,7 @@ class ControlPanelToShipStation extends Command
         //**************************************************
         // 3. Convert CP Order data to SS order data
         //**************************************************
-
-        $data = collect($orders)->flatten();
-
-        $transformedOrders = $shipStation->formatOrders($data);
+        $transformedOrders = $shipStation->formatOrders($orders->data);
 
         if(!$transformedOrders){
             echo "Unable to process transformed orders.\n";

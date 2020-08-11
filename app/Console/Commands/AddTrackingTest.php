@@ -125,7 +125,7 @@ class AddTrackingTest extends Command
         //Post tracking data to Control Pad
         $result = $this->controlPad->addTracking([$trackingData]);
 
-        echo "\n" . json_encode($result) . "\n";
+        //echo "\n" . json_encode($result) . "\n";
 
 
 

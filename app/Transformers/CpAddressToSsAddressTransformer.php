@@ -12,9 +12,8 @@ class CpAddressToSsAddressTransformer
      */
     public static function transform(array $cpAddress, string $customerName)
     {
-        $cpAddress = $cpAddress[0];
 
-        return [
+        $data =  [
             'name' => $customerName,
             'street1' => $cpAddress['line_1'],
             'street2' => !empty($cpAddress['line_2']) ? $cpAddress['line_2'] : null,
@@ -24,5 +23,7 @@ class CpAddressToSsAddressTransformer
             'country' => 'US' //TODO: If users from other countries come on board, this will
                               //      need to be changed to a field.
         ];
+
+        return $data;
     }
 }

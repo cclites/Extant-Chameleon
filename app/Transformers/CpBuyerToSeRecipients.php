@@ -8,9 +8,25 @@ use Illuminate\Support\Arr;
 
 class CpBuyerToSeRecipients
 {
-    public static function transform($order): array
+    public static function transform(array $order): array
     {
-        $lineItems = ControlPadResource::transformCPOrderItemToSEOrderItem($order['lines']);
+
+        //if(array_key_exists('id', $order)){
+            //$order = [$order];
+        //}
+
+
+        //dd($order);
+
+        $order = $order[0];
+
+        if(!$lines = $order['lines']) {
+            \Log::error("CpBuyerToSeRecipients:ERROR. There must be order lines.");
+            \Log::info(json_encode($order));
+            die("CpBuyerToSeRecipients: No order lines");
+        }
+
+        $lineItems = ControlPadResource::transformCPOrderItemToSEOrderItem($lines);
 
         /**
          * This is a workaround to handle the difference between a test address
@@ -20,12 +36,12 @@ class CpBuyerToSeRecipients
         if(is_object($order['shipping_address'])){ // Is CP address object
             $shippingAddress = (array)$order['shipping_address'];
         }else{ // Is test address object
-            $shippingAddress = $order['shipping_address'][0];
+            $shippingAddress = $order['shipping_address'];
         }
 
         $address2 = array_key_exists('line_2', $shippingAddress) ? $shippingAddress['line_2'] : '';
 
-        return [
+        $data = [
             'company' => $order['buyer_first_name'] . " " . $order['buyer_last_name'],
             'first_name' => $order['buyer_first_name'],
             'last_name' => $order['buyer_last_name'],
@@ -36,6 +52,9 @@ class CpBuyerToSeRecipients
             'postal_code' => $shippingAddress['zip'],
             'line_items' => $lineItems
         ];
+
+        /*************************************************************/
+        return $data;
 
     }
 }

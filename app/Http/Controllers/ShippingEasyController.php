@@ -20,50 +20,26 @@ class ShippingEasyController extends BaseController
      */
     public function notifyShipped(Request $request, $client)
     {
-        \Log::info($request);
 
+        if($request->input('shipment')){
 
-        if($request->input('orders')){
+            $shipment = $request->input('shipment');
 
-            $authConfig = config('auths.SHIPPINGEASY.' . strtoupper($client) );
+            $authConfig = config('auths.SHIPPINGEASY.' . $client );
 
             if (!$authConfig) {
                 \Log::warning('ShippingEasyController::notifyShipped client config not found', ['client' => $client]);
                 abort(409, 'Client not configured');
             }
 
-            $trackingResponse =  Tracking::getTrackingUrlForSe($request->shipping);
-
-            \Log::info(json_encode($trackingResponse));
-
-
-            $tracking = ControlPadResource::createTrackingForShipmentFromSE($request->orders);
-            Log::info(json_encode($tracking));
+            $tracking = ControlPadResource::createTrackingForShipmentFromSE($shipment);
+            $orderId = $tracking['order_id'];
 
             $controlPad = new ControlPadRepository($authConfig, null, null);
             $controlPad->addTracking([$tracking]);
 
-            $orderId = $request->orders[0]->external_order_identifier;
-            Log::info(json_encode($orderId));
+            $controlPad->patch([$orderId], 'fulfilled');
 
-            //generate the tracking url
-
-
-            /*
-            $url = $request->resource_url;
-
-            $shipStation = new ShipStationModelController($authConfig);
-
-
-            $trackingItems = $shipStation->getTrackingResources($url);
-            $ids = collect($trackingItems)->pluck('order_id')->toArray();
-            /***************************************************************/
-
-            //Add tracking
-
-
-            //Update control pad orders
-            //$controlPad->patch($ids, 'fulfilled');
         }
 
         return response()->json(['message' => 'Notify shipped']);
