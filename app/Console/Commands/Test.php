@@ -95,8 +95,6 @@ class Test extends Command
      */
     public function handle()
     {
-        $receiptId = 'OFVWOL-35';
-
         $cpRepo = new ControlPadRepository($this->authConfigs, null, null);
 
         $order = collect($cpRepo->get())->toArray();
@@ -104,9 +102,6 @@ class Test extends Command
 
         $ssRepo = new ShipStationRepository($this->authConfigs);
         $response = $ssRepo->post([$transformedOrder]);
-
-        dd($response);
-
 
     }
 }

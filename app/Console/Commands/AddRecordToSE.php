@@ -108,13 +108,7 @@ class AddRecordToSE extends Command
         $transformedOrder = ControlPadResource::transformCPOrderToSEOrder($CpOrder);
         $shippingEasyRepository = new ShippingEasyRepository($this->authConfigs);
 
-
-
         $result = $shippingEasyRepository->post($transformedOrder);
-
-        echo "RESULT\n";
-        dd($result);
-
 
     }
 }
