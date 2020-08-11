@@ -20,6 +20,7 @@ class ShippingEasyController extends BaseController
      */
     public function notifyShipped(Request $request, $client)
     {
+        \Log::info(json_encode($request->all()));
 
         if($request->input('shipment')){
 

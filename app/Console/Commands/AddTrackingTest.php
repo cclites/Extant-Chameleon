@@ -93,7 +93,7 @@ class AddTrackingTest extends Command
         //Test receipt_id
         $receiptId = 'OY6TKN-24';
 
-        $authConfigs = config('auths.DEV_1');
+        $authConfigs = config('auths.SHIPSTATION.DEV_1');
 
         $this->startDate = Carbon::yesterday()->subMonths(4)->startOfDay();
         $this->endDate = Carbon::now();

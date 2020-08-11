@@ -49,7 +49,8 @@ class ControlPadRepository extends BaseDataModelRepository
 
         $fullUrl = $this->CpBasePath . '/orders?start_date=' . $this->startDate .
                    '&end_date=' . $this->endDate . '&status=' . $status .
-                   '&orderlines=1';
+                   '&orderlines=1&receipt_id=OFVWOL-35';
+
 
         $client = new Client();
 
@@ -57,7 +58,6 @@ class ControlPadRepository extends BaseDataModelRepository
             'GET',
             $fullUrl,
             [
-                'debug' => env('APP_DEBUG'),
                 'headers' => $this->headers
             ]
         );

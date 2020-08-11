@@ -58,6 +58,8 @@ class ShipStationRepository extends BaseDataModelRepository
     {
         foreach( collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT) as $order ){
 
+            //dd($order);
+
             try{
                 $response = $this->client->post('orders/createorders',
                     [

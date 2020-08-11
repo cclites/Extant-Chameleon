@@ -18,6 +18,8 @@ class ShipStationController extends BaseController
      */
     public function notifyShipped(Request $request, $client)
     {
+        \Log::info(json_encode($request->all()));
+
         if($request->resource_url){
             $authConfig = config('auths.SHIPSTATION.'.$client);
             if (!$authConfig) {

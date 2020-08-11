@@ -28,14 +28,11 @@ class CpToSeTransformer
          * and an actual order from CP. Test addresses always come back as an array,
          * CP addresses are parsed as objects.
          */
-
         if(is_object($order['billing_address'])){  // Is CP address object
             $billingAddress = (array)$order['billing_address'];
         }else{ // Is test address object
             $billingAddress = $order['billing_address'];
         }
-
-        //billingAddress = $order['billing_address'];
 
         $address2 = array_key_exists('line_2', $billingAddress) ? $billingAddress['line_2'] : '';
 

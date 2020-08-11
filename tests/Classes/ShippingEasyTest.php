@@ -25,7 +25,7 @@ class ShippingEasyTest extends TestCase
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
 
-        $this->shippingEasy = ShippingEasyOrderFactory::create();
+        $this->shippingEasy = ShippingEasyOrderFactory::create()[0];
 
 
 

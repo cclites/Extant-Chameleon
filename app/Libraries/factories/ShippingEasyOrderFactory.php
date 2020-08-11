@@ -38,6 +38,6 @@ class ShippingEasyOrderFactory{
         ];
 
         //dd($data);
-        return $data;
+        return [$data];
     }
 }

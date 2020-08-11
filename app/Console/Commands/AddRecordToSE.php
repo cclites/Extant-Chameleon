@@ -23,7 +23,7 @@ use App\Libraries\ControlPadTrackingFactory;
  *
  * @package App\Console\Commands
  */
-class Test extends Command
+class AddRecordToSE extends Command
 {
     /**
      * @var Carbon
@@ -65,7 +65,7 @@ class Test extends Command
      *
      * @var string
      */
-    protected $signature = 'test:stuff';
+    protected $signature = 'seed:se';
 
     /**
      * The console command description.
@@ -85,7 +85,13 @@ class Test extends Command
 
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
-        $this->authConfigs = config('auths.SHIPSTATION.DEV_1');
+
+        $this->authConfigs = config('auths.SHIPPINGEASY.DEV_1');
+
+        \ShippingEasy::setApiKey($this->authConfigs['ApiKey']);
+        \ShippingEasy::setApiSecret($this->authConfigs['ApiSecret']);
+
+        require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
     }
 
     /**
@@ -95,17 +101,19 @@ class Test extends Command
      */
     public function handle()
     {
-        $receiptId = 'OFVWOL-35';
-
         $cpRepo = new ControlPadRepository($this->authConfigs, null, null);
 
-        $order = collect($cpRepo->get())->toArray();
-        $transformedOrder = ControlPadResource::transformCPOrderToSSOrder($order);
+        $CpOrder = collect($cpRepo->get())->toArray();
 
-        $ssRepo = new ShipStationRepository($this->authConfigs);
-        $response = $ssRepo->post([$transformedOrder]);
+        $transformedOrder = ControlPadResource::transformCPOrderToSEOrder($CpOrder);
+        $shippingEasyRepository = new ShippingEasyRepository($this->authConfigs);
 
-        dd($response);
+
+
+        $result = $shippingEasyRepository->post($transformedOrder);
+
+        echo "RESULT\n";
+        dd($result);
 
 
     }

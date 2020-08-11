@@ -60,12 +60,12 @@ class ControlPadTransformersTest extends TestCase
         $this->assertNotNull($transformedItem);
     }
 
-    /*
+
     public function test_can_convert_cp_address_to_ss_address(): void
     {
-        $transformedAddress = ControlPadResource::transformCPAddressToSSAddress($this->order['shipping_address'][0], "James Dough");
+        $transformedAddress = ControlPadResource::transformCPAddressToSSAddress($this->order['shipping_address'], "James Dough");
         $this->assertNotNull($transformedAddress);
-    }*/
+    }
 
     public function test_convert_control_pad_to_ss_order(): void
     {
