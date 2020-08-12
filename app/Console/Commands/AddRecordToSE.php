@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Resources\ControlPadResource;
+use App\Libraries\factories\CpOrderFactory;
 use App\Libraries\factories\ShippingEasyOrderFactory;
 use App\Repositories\ShippingEasyRepository;
 use Illuminate\Console\Command;
@@ -103,12 +104,14 @@ class AddRecordToSE extends Command
     {
         $cpRepo = new ControlPadRepository($this->authConfigs, null, null);
 
-        $CpOrder = collect($cpRepo->get())->toArray();
+        $cpOrder = CpOrderFactory::create();
 
-        $transformedOrder = ControlPadResource::transformCPOrderToSEOrder($CpOrder);
+        $transformedOrder = ControlPadResource::transformCPOrderToSEOrder($cpOrder);
         $shippingEasyRepository = new ShippingEasyRepository($this->authConfigs);
 
         $result = $shippingEasyRepository->post($transformedOrder);
+
+        echo "\nRESULT: " . json_encode($result) . "\n";
 
     }
 }
