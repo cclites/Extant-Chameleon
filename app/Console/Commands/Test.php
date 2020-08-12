@@ -95,13 +95,5 @@ class Test extends Command
      */
     public function handle()
     {
-        $cpRepo = new ControlPadRepository($this->authConfigs, null, null);
-
-        $order = collect($cpRepo->get())->toArray();
-        $transformedOrder = ControlPadResource::transformCPOrderToSSOrder($order);
-
-        $ssRepo = new ShipStationRepository($this->authConfigs);
-        $response = $ssRepo->post([$transformedOrder]);
-
     }
 }
