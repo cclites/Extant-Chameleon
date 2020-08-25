@@ -26,6 +26,7 @@ class ControlPadRepository extends BaseDataModelRepository
     public $endDate;
     public $controlPad;
     public $headers;
+    public $authConfig;
 
     public function __construct(array $authConfig, ?Carbon $startDate, ?Carbon $endDate)
     {
@@ -35,7 +36,7 @@ class ControlPadRepository extends BaseDataModelRepository
         $this->endDate = $endDate;
         $this->controlPad = new ControlPad();
         $this->headers = $this->controlPad->getHeader($authConfig);
-        //$this->client = new Client();
+        $this->authConfig = $authConfig;
     }
 
     /**
@@ -46,11 +47,16 @@ class ControlPadRepository extends BaseDataModelRepository
      */
     public function get(string $status = ControlPad::DEFAULT_STATUS): object
     {
+        $orderTypeIds = $this->authConfig['OrderTypeIds'];
+        $types = '';
+
+        foreach ($orderTypeIds as $key=>$id){
+            $types .= "&type_id[$key]=$id";
+        }
 
         $fullUrl = $this->CpBasePath . '/orders?start_date=' . $this->startDate .
-                   '&end_date=' . $this->endDate . '&status=' . $status .
-                   '&orderlines=1&receipt_id=OFVWOL-35';
-
+                   '&end_date=' . $this->endDate . //'&status=' . $status .
+                   '&orderlines=1' . $types;
 
         $client = new Client();
 

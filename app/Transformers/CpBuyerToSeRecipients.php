@@ -22,7 +22,7 @@ class CpBuyerToSeRecipients
 
         if(!$lines = $order['lines']) {
             \Log::error("CpBuyerToSeRecipients:ERROR. There must be order lines.");
-            \Log::info(json_encode($order));
+            //\Log::info(json_encode($order));
             die("CpBuyerToSeRecipients: No order lines");
         }
 

@@ -49,6 +49,9 @@ class ShippingEasyRepository extends BaseDataModelRepository
         foreach(collect($orders)->chunk(ShippingEasy::MAX_ORDERS_PER_CLIENT) as $order){
 
             $order = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
+
+            dd($order);
+
             $response = $order->create();
         }
 
@@ -99,7 +102,6 @@ class ShippingEasyRepository extends BaseDataModelRepository
      * Generate an array of orders and wrap in a SS create-order request
      *
      * @param array $orders
-     * @return \Illuminate\Support\Collection
      */
     public function formatOrders(array $orders)
     {
@@ -108,9 +110,34 @@ class ShippingEasyRepository extends BaseDataModelRepository
             die();
         }
 
-        return collect($orders)->map(function($order){
-            return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
+
+        return collect($orders)->filter(function($order){
+
+            echo "\n" . $order->id . "\n";
+
+            if(!property_exists($order, 'lines')){
+                echo "I HAVE NO LINES\n";
+            }else{
+                foreach ($order->lines as $item){
+
+                    if(!filled($item->items)){
+                        echo "I HAVE NO ITEMS in {$order->id}\n";
+                    }else{
+                        return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
+                    }
+                }
+            }
+
+            /*
+            if(!property_exists($order, 'lines')){
+                echo "HERE I HAVE NO LINES\n";
+                return;
+            }else{
+                return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
+            }*/
+
         });
+
 
     }
 

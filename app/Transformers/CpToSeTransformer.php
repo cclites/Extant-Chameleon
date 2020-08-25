@@ -12,15 +12,16 @@ class CpToSeTransformer
     /**
      * @param array $cpAddress
      * @param string $customerName
-     * @return array
+     * @return mixed
      */
     public static function transform(array $order, string $customerName)
     {
 
         if(!array_key_exists('lines', $order)){
-            \Log::error('Order has no items');
-            \Log::info(json_encode($order));
-            die("CpToSeTransformer::transform");
+            \Log::error('Order has no items. Cannot transform');
+            //\Log::info(json_encode($order));
+            //die("CpToSeTransformer::transform");
+            return;
         }
 
         /**

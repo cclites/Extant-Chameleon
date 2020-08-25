@@ -85,15 +85,15 @@ class ControlPadResource extends JsonResource
      * Convert a ControlPad order to a ShippingEasy
      *
      * @param array $order
-     * @return array
      */
-    public static function transformCPOrderToSEOrder(array $order): array
+    public static function transformCPOrderToSEOrder(array $order)
     {
+        /*
         if(!array_key_exists('lines', $order)){
             \Log::error('Order has no items');
-            \Log::info(json_encode($order));
-            die();
-        }
+            //\Log::info(json_encode($order));
+            return '';
+        }*/
 
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 

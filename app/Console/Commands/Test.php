@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\ControlPad;
 use App\Http\Resources\ControlPadResource;
 use App\Libraries\factories\ShippingEasyOrderFactory;
 use App\Repositories\ShippingEasyRepository;
@@ -85,7 +86,9 @@ class Test extends Command
 
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
-        $this->authConfigs = config('auths.SHIPSTATION.DEV_1');
+        $this->authConfigs = config('auths.SHIPPINGEASY.DEV_1');
+
+        require_once "app/Libraries/integration_wrappers/ShippingEasy/lib/ShippingEasy.php";
     }
 
     /**
@@ -95,5 +98,58 @@ class Test extends Command
      */
     public function handle()
     {
+        //see if I have auths
+        if(!$this->authConfigs){
+            die("No configs");
+        }
+
+        $authConfig = $this->authConfigs;
+        $shippingEasy = new ShippingEasyRepository($authConfig);
+        $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
+
+        $orders = $controlPad
+            ->get(ControlPad::DEFAULT_STATUS);
+
+        /*
+        foreach($orders->data as $order){
+
+            if(!property_exists($order, 'lines')){
+                echo "I HAVE NO LINES\n";
+            }else{
+                foreach ($order->lines as $item){
+
+                    //die(json_encode($item));
+
+                    if(!filled($item->items)){
+                        echo "I HAVE NO ITEMS in {$order->id}\n";
+                    }
+                }
+            }
+
+        }*/
+
+        $transformedOrders = $shippingEasy->formatOrders($orders->data);
+        //dd($transformedOrders);
+
+        //foreach ($transformedOrders as $order){
+
+            //echo json_encode($order) . "\n";
+            //die();
+
+        //}
+
+        //$response = $shippingEasy->post($transformedOrders);
+        //dd($response);
+
+        /*
+        collect($orders->data)->each(function ($order){
+
+            echo $order->id . "\n";
+            //echo json_encode($order) . "\n";
+            //echo gettype($order) . "\n";
+            return;
+
+        });*/
+
     }
 }
