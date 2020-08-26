@@ -13,14 +13,16 @@ use App\Repositories\ShippingEasyRepository;
 class ShippingEasyController extends BaseController
 {
     /**
-     * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      *
      * NOTE: If necessary, this logic can be easily moved into a Job queue.
      */
     public function notifyShipped(Request $request, $client)
     {
-        \Log::info(json_encode($request->all()));
+        if(!$request->input('shipment')){
+            return response()->json(['message' => 'Notify shipped message is invalid']);
+        }
 
         if($request->input('shipment')){
 

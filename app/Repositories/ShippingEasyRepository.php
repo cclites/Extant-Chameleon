@@ -46,16 +46,14 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function post($orders): bool
     {
-        foreach(collect($orders)->chunk(ShippingEasy::MAX_ORDERS_PER_CLIENT) as $order){
+        foreach($orders as $order){
 
-            $order = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
-
-            dd($order);
-
-            $response = $order->create();
+            $orderRequest = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
+            $response = $orderRequest->create();
         }
 
         return true;
+
     }
 
     /**
@@ -67,7 +65,6 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function getTrackingResources(string $path)
     {
-
         $response = $this->client->request(
             'GET',
             $path
@@ -99,7 +96,7 @@ class ShippingEasyRepository extends BaseDataModelRepository
     }
 
     /**
-     * Generate an array of orders and wrap in a SS create-order request
+     * Generate an array of orders and wrap in a SE create-order request
      *
      * @param array $orders
      */
@@ -110,35 +107,29 @@ class ShippingEasyRepository extends BaseDataModelRepository
             die();
         }
 
+        //Error check to trap malformed orders
+        $orders = collect($orders)->transform(function($order){
 
-        return collect($orders)->filter(function($order){
+            $valid = true;
 
-            echo "\n" . $order->id . "\n";
-
-            if(!property_exists($order, 'lines')){
-                echo "I HAVE NO LINES\n";
-            }else{
-                foreach ($order->lines as $item){
-
-                    if(!filled($item->items)){
-                        echo "I HAVE NO ITEMS in {$order->id}\n";
-                    }else{
-                        return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
-                    }
+            foreach($order->lines as $line){
+                if(!$line->items){
+                    echo "*********************** ORDER HAS NO ITEMS\n";
+                    $valid = false;
+                    break;
                 }
             }
 
-            /*
-            if(!property_exists($order, 'lines')){
-                echo "HERE I HAVE NO LINES\n";
-                return;
-            }else{
+            if($valid){
+                echo "***************************  ORDER IS VALID\n";
                 return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
-            }*/
+            }else{
+                return null;
+            }
 
         });
 
-
+        return array_values(array_filter($orders->toArray()));
     }
 
     /**

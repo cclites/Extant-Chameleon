@@ -153,7 +153,8 @@ class ShipStationRepository extends BaseDataModelRepository
             die();
         }
 
-        return collect($orders)->map(function($order){
+        return collect($orders)->transform(function($order){
+
             return ControlPadResource::transformCPOrderToSSOrder($order);
         });
     }

@@ -102,16 +102,22 @@ class AddRecordToSE extends Command
      */
     public function handle()
     {
+
+        return;
+
+        /*
         $cpRepo = new ControlPadRepository($this->authConfigs, null, null);
 
         $cpOrder = CpOrderFactory::create();
 
         $transformedOrder = ControlPadResource::transformCPOrderToSEOrder($cpOrder);
+
         $shippingEasyRepository = new ShippingEasyRepository($this->authConfigs);
 
         $result = $shippingEasyRepository->post($transformedOrder);
 
         echo "\nRESULT: " . json_encode($result) . "\n";
+        */
 
     }
 }

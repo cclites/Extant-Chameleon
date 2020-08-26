@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 
 class ApiAccessMiddleware
 {
@@ -16,9 +17,8 @@ class ApiAccessMiddleware
      * Note: This is a placeholder function. It is expected that API access is
      *       whitelist protected at the server level
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        \Log::info("API ACCESS MIDDLEWARE");
         return $next($request);
     }
 }

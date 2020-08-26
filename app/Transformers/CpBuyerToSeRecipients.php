@@ -11,13 +11,6 @@ class CpBuyerToSeRecipients
     public static function transform(array $order): array
     {
 
-        //if(array_key_exists('id', $order)){
-            //$order = [$order];
-        //}
-
-
-        //dd($order);
-
         $order = $order[0];
 
         if(!$lines = $order['lines']) {

@@ -88,17 +88,8 @@ class ControlPadResource extends JsonResource
      */
     public static function transformCPOrderToSEOrder(array $order)
     {
-        /*
-        if(!array_key_exists('lines', $order)){
-            \Log::error('Order has no items');
-            //\Log::info(json_encode($order));
-            return '';
-        }*/
-
         $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
-
         return CpToSeTransformer::transform($order, $customerUserName);
-
     }
 
     public static function transformCPOrderItemToSEOrderItem(array $items):array
