@@ -19,7 +19,13 @@ return [
     'SS_BASE_PATH'=> env('SS_BASE_PATH'),
     'SHIPSTATION_API_NOTIFICATIONS' => env('SHIPSTATION_API_NOTIFICATIONS'),
 
-    'SHIPSTATION_TRACKING_URLS' => [
+    /************************************************************************
+     * SSCP CONFIGS
+     ************************************************************************/
+    'SSCP_START_DATE' => Carbon::now()->subMinutes(15),
+    'SSCP_END_DATE' => Carbon::now(),
+
+    'TRACKING_URLS' => [
         'USPS' => 'https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1=',
         'UPS' => 'http://wwwapps.ups.com/WebTracking/track?track=yes&trackNums=',
         'FEDEX' => 'http://www.fedex.com/Tracking?tracknumbers='
