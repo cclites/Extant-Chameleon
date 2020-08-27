@@ -63,9 +63,6 @@ class ShipStation
     /***************************************************
      * VALIDATION
      ***************************************************/
-    public static $readRules = [
-        'title' => 'required|unique:posts|max:255',
-        'body' => 'required',
-    ];
+
 
 }

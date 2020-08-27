@@ -76,29 +76,10 @@ class ShippingEasyRepository extends BaseDataModelRepository
     }
 
     /**
-     * Primarily used for testing
-     *
-     * @param $id
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function removeSsWebHook($id): \Psr\Http\Message\ResponseInterface
-    {
-        /*
-        $client = new Client([
-            'base_uri' => $this->SsBasePath,
-            'headers' => $this->headers,
-        ]);
-
-        $response = $client->delete('/webhooks/' . $id);
-
-        return $response;
-        */
-    }
-
-    /**
      * Generate an array of orders and wrap in a SE create-order request
      *
      * @param array $orders
+     * @return array
      */
     public function formatOrders(array $orders)
     {

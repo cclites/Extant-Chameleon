@@ -40,9 +40,7 @@ class ShipStationRepository extends BaseDataModelRepository
         parent::boot();
 
         $shipStation = new ShipStation();
-
         $this->headers = $shipStation->getHeader($authConfig);
-
         $this->client = new Client(
             [
                 'base_uri' => config('sscp.SS_BASE_PATH'),
@@ -57,8 +55,6 @@ class ShipStationRepository extends BaseDataModelRepository
     public function post($orders): bool
     {
         foreach( collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT) as $order ){
-
-            //dd($order);
 
             try{
                 $response = $this->client->post('orders/createorders',

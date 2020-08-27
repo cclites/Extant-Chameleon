@@ -24,39 +24,16 @@ class ShippingEasy
      * RELATIONSHIPS
      ****************************************************/
 
-
     /****************************************************
      * MUTATORS
      ****************************************************/
 
-    public function generateAuthorizationToken()
-    {
-        return '';
-    }
-
-    public function buildHeader()
-    {
-        return [
-            'Authorization' => 'Basic ' . $this->generateAuthorizationToken(),
-            'Content-Type' => 'application/json'
-        ];
-    }
-
     /****************************************************
      * ACCESSORS
      ****************************************************/
-    public function getHeader($authConfig)
-    {
-        $this->authConfig = $authConfig;
-        return $this->buildHeader();
-    }
 
     /***************************************************
      * VALIDATION
      ***************************************************/
-    public static $readRules = [
-        'title' => 'required|unique:posts|max:255',
-        'body' => 'required',
-    ];
 
 }
