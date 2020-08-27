@@ -90,7 +90,7 @@ User authentications are loaded from auths config. When the Cron runs, it looks 
 <hr>
 
 #####DEVELOPER UPDATES
-08/26/2020
+08/27/2020
 
 ######<i>Credentials</i>
 
