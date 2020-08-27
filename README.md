@@ -5,7 +5,7 @@
 <b>Email: </b><a a href="mailto:chad@extant.digital">chad@extant.digital</a><br>
 <b>Slack: </b>extantdigital.slack.com<br><br> 
 
-Document revision date: 7/1/2020<br>
+Document revision date: 08/26/2020<br>
 
 <hr>
 
@@ -81,6 +81,30 @@ The job classes for ShipStation and ControlPad queues are unused for the moment 
 #####Operational Notes:
 
 User authentications are loaded from auths config. When the Cron runs, it looks for an array of users users in auths config, and processes each user.
+
+<hr>
+
+#####DEVELOPER UPDATES
+08/26/2020
+
+<i>Credentials</i>
+
+To support multi-tenency and multiple APIs, config/auths.php was modified to allow mamangement of multiple shippers.
+
+Should the need arise, the app can simply be cloned to handle a single client.
+
+<i>Crons</i>
+
+Each integration has their own cron job.
+
+<i>Code Reorganization</i>
+
+Code base has been reorganized to use repository and transformer patterns. This will make it easier to establish a point-by-point checklist for quickly integrating new providers.
+
+<i>Dependencies</i>
+There are no new dependencies in this update.
+
+
 
 
 
