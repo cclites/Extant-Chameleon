@@ -11,14 +11,14 @@ class ControlPadLineItemsFactory{
 
         $data = [
             'id' => '9999',
-            'manufacturer_sku' => $faker->password(9),
+            'manufacturer_sku' => $faker->shuffle($faker->company),
             'name' => $faker->name(),
             'quantity' => $faker->randomNumber(3),
             'price' => number_format($faker->randomNumber(2), 2),
             'created_at' => $faker->date(),
         ];
 
-        return [$data];
+        return $data;
     }
 
 

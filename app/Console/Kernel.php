@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\ControlPanelToShippingEasy::class,
         Commands\Test::class,
         Commands\Setup::class,
-        Commands\AddRecordToSE::class,
+        Commands\ShipStationLoadTest::class,
     ];
 
     /**

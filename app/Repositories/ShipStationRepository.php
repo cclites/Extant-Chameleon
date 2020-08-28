@@ -40,7 +40,9 @@ class ShipStationRepository extends BaseDataModelRepository
         parent::boot();
 
         $shipStation = new ShipStation();
+
         $this->headers = $shipStation->getHeader($authConfig);
+
         $this->client = new Client(
             [
                 'base_uri' => config('sscp.SS_BASE_PATH'),
@@ -52,23 +54,24 @@ class ShipStationRepository extends BaseDataModelRepository
      * @param $orders
      * @return bool
      */
-    public function post($orders): bool
+    public function post(array $orders): bool
     {
-        foreach( collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT) as $order ){
 
-            try{
-                $response = $this->client->post('orders/createorders',
-                    [
-                        'json' => $order
-                    ]
-                );
 
-            }catch (GuzzleException $e){
-                \Log::info($e->getMessage());
-                \Log::error("Unable to create Shipstation orders");
-                return false;
-           }
+        foreach($orders as $order){
+
+            //dump(gettype($order));
+            //die("DYING IN ORDERS\n");
+
+            $response = $this->client->post('orders/createorders',
+                [
+                    'json' => [$order]
+                ]
+            );
+
+            //dump($response);
         }
+
 
         return true;
     }
@@ -151,6 +154,9 @@ class ShipStationRepository extends BaseDataModelRepository
 
         return collect($orders)->transform(function($order){
 
+            //dump($order);
+            //die("\nDying in ShipStationRepository\n");
+            //We are transforming a single order
             return ControlPadResource::transformCPOrderToSSOrder($order);
         });
     }

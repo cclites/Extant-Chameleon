@@ -8,54 +8,35 @@ use App\Http\Resources\ControlPadResource;
 class CpToSsTransformer
 {
     /**
-     * @param $orders
+     * @param $order
      * @return array
      */
-    public static function transform(array $orders): array
+    public static function transform(array $order): array
     {
-        $data = [];
-
-        if(array_key_exists('id', $orders)){
-            $orders = [$orders];
+        if(!$order['lines']){
+            \Log::error('Order has no lines');
+            \Log::info(json_encode($order));
+            die();
         }
 
-        foreach($orders as $order){
+        $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
-            if(is_object($order)){
-                $order = (array)$order;
-            }
+        $items = ControlPadResource::transformCPOrderItemToSSOrderItem($order['lines'], $customerUserName);
 
-            $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
+        return  [
+            'orderNumber' => $order['id'],
+            'orderKey' => $order['receipt_id'],
+            'orderDate' => $order['created_at'],
+            'orderStatus' => 'awaiting_shipment',
+            'orderTotal' => $order['total_price'],
+            'taxAmount' => $order['total_tax'],
+            'amountPaid' => 0, //TODO:: Figure out which parameter to use here
+            'shippingAmount' => $order['total_shipping'],
+            'billTo' => ControlPadResource::transformCPAddressToSSAddress((array)$order['billing_address'], $customerUserName),
+            'shipTo' => ControlPadResource::transformCPAddressToSSAddress((array)$order['shipping_address'], $customerUserName),
+            'customerUsername' => $customerUserName,
+            'items' => $items
+        ];
 
-            //Fix this. Has to be an array of orders.
-            if( !array_key_exists('lines', $order)){
-                \Log::error('Order has no items');
-                \Log::info(json_encode($order));
-                die();
-            }
-
-            $items = collect($order['lines'])->map(function($line) use($customerUserName){
-                return ControlPadResource::transformCPOrderItemToSSOrderItem((array)$line, $customerUserName);
-            });
-
-
-            $data[] =  [
-                'orderNumber' => $order['id'],
-                'orderKey' => $order['receipt_id'],
-                'orderDate' => $order['created_at'],
-                'orderStatus' => 'awaiting_shipment',
-                'orderTotal' => $order['total_price'],
-                'taxAmount' => $order['total_tax'],
-                'amountPaid' => 0, //TODO:: Figure out which parameter to use here
-                'shippingAmount' => $order['total_shipping'],
-                'billTo' => ControlPadResource::transformCPAddressToSSAddress((array)$order['billing_address'], $customerUserName),
-                'shipTo' => ControlPadResource::transformCPAddressToSSAddress((array)$order['shipping_address'], $customerUserName),
-                'customerUsername' => $customerUserName,
-                'items' => $items
-            ];
-
-        }
-
-        return collect($data[0])->toArray();
     }
 }

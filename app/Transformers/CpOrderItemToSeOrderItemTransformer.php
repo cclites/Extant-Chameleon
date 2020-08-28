@@ -7,7 +7,6 @@ class CpOrderItemToSeOrderItemTransformer
 {
     public static function transform($items): array
     {
-
         $data = [];
 
         foreach($items as $item){

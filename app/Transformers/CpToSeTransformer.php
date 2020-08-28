@@ -37,7 +37,7 @@ class CpToSeTransformer
 
         $address2 = array_key_exists('line_2', $billingAddress) ? $billingAddress['line_2'] : '';
 
-        return [
+        $order = [
             'external_order_identifier' => $order['id'],
             'alternate_order_id' => $order['receipt_id'],
             'ordered_at' => $order['created_at'],
@@ -55,5 +55,7 @@ class CpToSeTransformer
             'billing_country' => 'US', //TODO: If users from other countries come on board, this will need to be changed to a field.
             'recipients' => [ControlPadResource::transformCPRecipientToSERecipient($order)],
         ];
+
+        return $order;
     }
 }
