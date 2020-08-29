@@ -65,7 +65,7 @@ class ShipStationRepository extends BaseDataModelRepository
 
             $response = $this->client->post('orders/createorders',
                 [
-                    'json' => json_decode($chunk)
+                    'json' => [$chunk->all()]
                 ]
             );
 
