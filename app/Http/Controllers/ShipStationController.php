@@ -50,6 +50,6 @@ class ShipStationController extends BaseController
 
         \Log::info("Running tests");
 
-        return response()->json(['message' => 'Test Connection Successful']);
+        return response()->json(['message' => 'TestStub Connection Successful']);
     }
 }

@@ -98,6 +98,8 @@ class ShipStationLoadTest extends Command
      */
     public function handle()
     {
+        $startTime = Carbon::now();
+
         //see if I have auths
         if(!$this->authConfigs){
             die("No configs");
@@ -107,23 +109,18 @@ class ShipStationLoadTest extends Command
 
         $cpOrders = [];
 
-        for($i = 0; $i < 5; $i += 1){
-
+        for($i = 0; $i < 101; $i += 1){
             $order = CpOrderFactory::create();
-
             $cpOrders[] = $order;
         }
 
-
-        //dump($cpOrders);
-        //die("\nDying in load test\n");
-
-
         $transformedOrders = $shipStationRepo->formatOrders($cpOrders);
+        //$shipStationRepo->post($transformedOrders->toArray());
+        $shipStationRepo->post($transformedOrders->all());
 
+        $endTime = Carbon::now();
 
-
-        $shipStationRepo->post($transformedOrders->toArray());
+        echo "****** Execution time : " . $endTime->diffInSeconds($startTime) . "\n";
 
         return;
     }

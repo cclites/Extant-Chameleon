@@ -6,6 +6,7 @@ use App\ControlPad;
 use App\Http\Resources\ControlPadResource;
 use App\ShippingEasy;
 
+use App\ShipStation;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
@@ -46,11 +47,17 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function post($orders): bool
     {
+        $orderChunks = collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT);
+
+        foreach($orderChunks as $chunk){
+            dd($chunk);
+        }
+        /*
         foreach($orders as $order){
 
             $orderRequest = new \ShippingEasy_Order($this->authConfig['StoreApiKey'], $order);
             $response = $orderRequest->create();
-        }
+        }*/
 
         return true;
 

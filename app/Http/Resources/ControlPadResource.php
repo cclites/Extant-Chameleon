@@ -50,8 +50,10 @@ class ControlPadResource extends JsonResource
 
     public static function transformCPOrderItemToSSOrderItem(array $orderItem): array
     {
-        //This needs to interate through the order items array
-        //return CpOrderItemToSsOrderItemTransformer::transform($orderItem);
+
+        //dump($orderItem);
+        //die("Dead in transformCPOrderItemToSSOrderItem\n");
+
         return collect($orderItem)->map(function($item){
             return CpOrderItemToSsOrderItemTransformer::transform($item);
         })->toArray();

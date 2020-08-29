@@ -7,10 +7,6 @@ class CpOrderItemToSsOrderItemTransformer
 {
     public static function transform($orderItem): array
     {
-        //dump($orderItem);
-        //die();
-
-
         return [
             'lineItemKey' => $orderItem['id'],
             'sku' => $orderItem['manufacturer_sku'],

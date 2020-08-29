@@ -9,6 +9,11 @@ class CpOrderFactory{
     public static function create()
     {
         $faker = Factory::create();
+        $lines = [];
+
+        for($i=0; $i<3; $i += 1){
+            $lines[] = ControlPadLineItemsFactory::create();
+        }
 
         $data = [
             'id' => $faker->randomNumber(2),
@@ -22,7 +27,7 @@ class CpOrderFactory{
             'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
             'billing_address' => AddressFactory::cpCreate(),
             'shipping_address' => AddressFactory::cpCreate(),
-            'lines' => [ControlPadLineItemsFactory::create()],
+            'lines' => $lines,
         ];
 
         return $data;

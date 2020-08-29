@@ -55,7 +55,7 @@ abstract class ShippingEasyTestCase extends UnitTestCase
           'amount'    => 0,
           'currency'  => 'usd',
           'interval'  => 'month',
-          'name'      => 'Gold Test Plan',
+          'name'      => 'Gold TestStub Plan',
         ));
     }
   }

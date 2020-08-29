@@ -15,8 +15,9 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\ControlPanelToShipStation::class,
         Commands\ControlPanelToShippingEasy::class,
-        Commands\Test::class,
+        Commands\TestStub::class,
         Commands\Setup::class,
+        //Test Shipping station load
         Commands\ShipStationLoadTest::class,
     ];
 

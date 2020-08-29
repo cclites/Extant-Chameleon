@@ -56,7 +56,7 @@ class ControlPadTransformersTest extends TestCase
 
     public function test_can_convert_cp_order_item_to_ss_order_item(): void
     {
-        $transformedItem = ControlPadResource::transformCPOrderItemToSSOrderItem( $this->order['lines'][0] );
+        $transformedItem = ControlPadResource::transformCPOrderItemToSSOrderItem( $this->order['lines'] );
         $this->assertNotNull($transformedItem);
     }
 

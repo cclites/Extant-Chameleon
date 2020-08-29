@@ -57,21 +57,19 @@ class ShipStationRepository extends BaseDataModelRepository
     public function post(array $orders): bool
     {
 
+        $orderChunks = collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT);
 
-        foreach($orders as $order){
+        foreach($orderChunks as $chunk){
 
-            //dump(gettype($order));
-            //die("DYING IN ORDERS\n");
+            //dd($chunk->all());
 
             $response = $this->client->post('orders/createorders',
                 [
-                    'json' => [$order]
+                    'json' => json_decode($chunk)
                 ]
             );
 
-            //dump($response);
         }
-
 
         return true;
     }

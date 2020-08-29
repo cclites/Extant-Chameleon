@@ -24,7 +24,7 @@ use App\Libraries\ControlPadTrackingFactory;
  *
  * @package App\Console\Commands
  */
-class Test extends Command
+class TestStub extends Command
 {
     /**
      * @var Carbon
@@ -102,54 +102,6 @@ class Test extends Command
         if(!$this->authConfigs){
             die("No configs");
         }
-
-        $authConfig = $this->authConfigs;
-        $shippingEasy = new ShippingEasyRepository($authConfig);
-        $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
-
-        $orders = $controlPad
-            ->get(ControlPad::DEFAULT_STATUS);
-
-        /*
-        foreach($orders->data as $order){
-
-            if(!property_exists($order, 'lines')){
-                echo "I HAVE NO LINES\n";
-            }else{
-                foreach ($order->lines as $item){
-
-                    //die(json_encode($item));
-
-                    if(!filled($item->items)){
-                        echo "I HAVE NO ITEMS in {$order->id}\n";
-                    }
-                }
-            }
-
-        }*/
-
-        $transformedOrders = $shippingEasy->formatOrders($orders->data);
-        //dd($transformedOrders);
-
-        //foreach ($transformedOrders as $order){
-
-            //echo json_encode($order) . "\n";
-            //die();
-
-        //}
-
-        //$response = $shippingEasy->post($transformedOrders);
-        //dd($response);
-
-        /*
-        collect($orders->data)->each(function ($order){
-
-            echo $order->id . "\n";
-            //echo json_encode($order) . "\n";
-            //echo gettype($order) . "\n";
-            return;
-
-        });*/
 
     }
 }

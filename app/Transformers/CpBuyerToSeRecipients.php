@@ -23,7 +23,7 @@ class CpBuyerToSeRecipients
 
         /**
          * This is a workaround to handle the difference between a test address
-         * and an actual order from CP. Test addresses always come back as an array,
+         * and an actual order from CP. TestStub addresses always come back as an array,
          * CP addresses are parsed as objects.
          */
         if(is_object($order['shipping_address'])){ // Is CP address object
