@@ -25,7 +25,7 @@ use App\Libraries\ControlPadTrackingFactory;
  *
  * @package App\Console\Commands
  */
-class ShipStationLoadTest extends Command
+class ShippingEasyLoadTest extends Command
 {
     /**
      * @var Carbon
@@ -67,7 +67,7 @@ class ShipStationLoadTest extends Command
      *
      * @var string
      */
-    protected $signature = 'load-test:ss';
+    protected $signature = 'load-test:se';
 
     /**
      * The console command description.
@@ -87,7 +87,7 @@ class ShipStationLoadTest extends Command
 
         $this->startDate = config('sscp.CP_ORDERS_START');
         $this->endDate = config('sscp.CP_ORDERS_END');
-        $this->authConfigs = config('auths.SHIPSTATION.DEV_1');
+        $this->authConfigs = config('auths.SHIPPINGEASY.DEV_1');
 
     }
 
@@ -105,23 +105,27 @@ class ShipStationLoadTest extends Command
             die("No configs");
         }
 
-        $shipStationRepo = new ShipStationRepository($this->authConfigs);
+        $shippingEasyRepo = new ShippingEasyRepository($this->authConfigs);
 
         $cpOrders = [];
 
-        for($i = 0; $i < 10000; $i += 1){
+        //Pretty sure this will puke
+        for($i = 0; $i < 1000; $i += 1){
             $order = CpOrderFactory::create();
             $cpOrders[] = $order;
         }
 
-        $transformedOrders = $shipStationRepo->formatOrders($cpOrders);
-        //$shipStationRepo->post($transformedOrders->toArray());
-        $shipStationRepo->post($transformedOrders->all());
+        $transformedOrders = $shippingEasyRepo->formatOrders($cpOrders);
+        $shippingEasyRepo->post($transformedOrders);
 
         $endTime = Carbon::now();
 
         echo "****** Execution time : " . $endTime->diffInSeconds($startTime) . " Seconds\n";
 
         return;
+    }
+
+    public function data(){
+
     }
 }

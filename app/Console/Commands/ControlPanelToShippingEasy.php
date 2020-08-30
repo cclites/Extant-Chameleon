@@ -86,7 +86,7 @@ class ControlPanelToShippingEasy extends Command
     public function processOrders($client)
     {
         $authConfig = $this->authConfigs;
-        $shippingEasy = new ShippingEasyRepository($authConfig);
+        $shippingEasyRepo = new ShippingEasyRepository($authConfig);
         $controlPad = new ControlPadRepository($authConfig, $this->startDate, $this->endDate);
 
         //**************************************************
@@ -119,7 +119,7 @@ class ControlPanelToShippingEasy extends Command
         //**************************************************
         // 3. Convert CP Order data to SE order data
         //**************************************************
-        $transformedOrders = $shippingEasy->formatOrders($orders->data);
+        $transformedOrders = $shippingEasyRepo->formatOrders($orders->data);
 
         if(!$transformedOrders){
             echo "Unable to process transformed orders.\n";
@@ -132,7 +132,7 @@ class ControlPanelToShippingEasy extends Command
         //**************************************************
         // 4. Post orders to ShippingEasy
         //**************************************************
-        $response = $shippingEasy->post($transformedOrders);
+        $response = $shippingEasyRepo->post($transformedOrders);
 
 
         if(!$response){

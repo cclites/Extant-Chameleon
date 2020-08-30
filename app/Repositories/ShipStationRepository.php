@@ -57,15 +57,15 @@ class ShipStationRepository extends BaseDataModelRepository
     public function post(array $orders): bool
     {
 
-        $orderChunks = collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT);
+        //$orderChunks = collect($orders)->chunk(ShipStation::MAX_ORDERS_PER_CLIENT);
+        $orderChunks = array_chunk($orders, ShipStation::MAX_ORDERS_PER_CLIENT, false);
+
 
         foreach($orderChunks as $chunk){
 
-            //dd($chunk->all());
-
             $response = $this->client->post('orders/createorders',
                 [
-                    'json' => [$chunk->all()]
+                    'json' => $chunk
                 ]
             );
 
@@ -151,10 +151,6 @@ class ShipStationRepository extends BaseDataModelRepository
         }
 
         return collect($orders)->transform(function($order){
-
-            //dump($order);
-            //die("\nDying in ShipStationRepository\n");
-            //We are transforming a single order
             return ControlPadResource::transformCPOrderToSSOrder($order);
         });
     }

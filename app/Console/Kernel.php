@@ -17,8 +17,10 @@ class Kernel extends ConsoleKernel
         Commands\ControlPanelToShippingEasy::class,
         Commands\TestStub::class,
         Commands\Setup::class,
-        //Test Shipping station load
+
+        //Tests factories and ability of system to parse CP into SS orders
         Commands\ShipStationLoadTest::class,
+        Commands\ShippingEasyLoadTest::class,
     ];
 
     /**

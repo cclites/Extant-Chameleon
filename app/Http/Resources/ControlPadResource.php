@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use App\Tracking;
 use App\Transformers\CpBuyerToSeRecipients;
-use App\Transformers\CpOrderItemToSeOrderItemTransformer;
+use App\Transformers\CpOrderItemToSeLineItemsTransformer;
 use App\Transformers\CpOrderItemToSsOrderItemTransformer;
 use App\Transformers\CpToSeTransformer;
 use App\Transformers\CpAddressToSsAddressTransformer;
@@ -47,13 +47,19 @@ class ControlPadResource extends JsonResource
         return CpToSsTransformer::transform($orders);
     }
 
+    /**
+     * Convert a ControlPad order to a ShippingEasy
+     *
+     * @param array $order
+     */
+    public static function transformCPOrderToSEOrder(array $order)
+    {
+        return CpToSeTransformer::transform($order);
+    }
+
 
     public static function transformCPOrderItemToSSOrderItem(array $orderItem): array
     {
-
-        //dump($orderItem);
-        //die("Dead in transformCPOrderItemToSSOrderItem\n");
-
         return collect($orderItem)->map(function($item){
             return CpOrderItemToSsOrderItemTransformer::transform($item);
         })->toArray();
@@ -87,25 +93,16 @@ class ControlPadResource extends JsonResource
         ];
     }
 
-    /**
-     * Convert a ControlPad order to a ShippingEasy
-     *
-     * @param array $order
-     */
-    public static function transformCPOrderToSEOrder(array $order)
-    {
-        $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
-        return CpToSeTransformer::transform($order, $customerUserName);
-    }
+
 
     public static function transformCPOrderItemToSEOrderItem(array $items):array
     {
-        return CpOrderItemToSeOrderItemTransformer::transform($items);
+        return CpOrderItemToSeLineItemsTransformer::transform($items);
     }
 
     public static function transformCPRecipientToSERecipient($order): array
     {
-        return CpBuyerToSeRecipients::transform([$order]);
+        return CpBuyerToSeRecipients::transform($order);
     }
 }
 

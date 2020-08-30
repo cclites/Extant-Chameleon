@@ -14,30 +14,36 @@ class CpToSeTransformer
      * @param string $customerName
      * @return mixed
      */
-    public static function transform(array $order, string $customerName)
+    public static function transform(array $order)
     {
 
+
+
         if(!array_key_exists('lines', $order)){
-            \Log::error('Order has no items. Cannot transform');
+            \Log::error('Order has no lines. Cannot transform');
             //\Log::info(json_encode($order));
-            //die("CpToSeTransformer::transform");
+            die("CpToSeTransformer::transform");
             return;
         }
+
+        $customerUserName = $order['buyer_first_name'] . " " . $order['buyer_last_name'];
 
         /**
          * This is a workaround to handle the difference between a test address
          * and an actual order from CP. TestStub addresses always come back as an array,
          * CP addresses are parsed as objects.
          */
-        if(is_object($order['billing_address'])){  // Is CP address object
+        //if(is_object($order['billing_address'])){  // Is CP address object
             $billingAddress = (array)$order['billing_address'];
-        }else{ // Is test address object
-            $billingAddress = $order['billing_address'];
-        }
+        //}else{ // Is test address object
+
+        //}
+
+        $billingAddress = $order['billing_address'];
 
         $address2 = array_key_exists('line_2', $billingAddress) ? $billingAddress['line_2'] : '';
 
-        $order = [
+        return [
             'external_order_identifier' => $order['id'],
             'alternate_order_id' => $order['receipt_id'],
             'ordered_at' => $order['created_at'],
@@ -45,8 +51,8 @@ class CpToSeTransformer
             'total_including_tax' => $order['total_price'],
             'total_tax' => $order['total_tax'],
             'shipping_cost_including_tax' => $order['total_shipping'],
-            'billing_first_name' => $customerName,
-            'billing_last_name' => $customerName,
+            'billing_first_name' => $order['buyer_first_name'],
+            'billing_last_name' => $order['buyer_last_name'],
             'billing_address' => $billingAddress['line_1'],
             'billing_address_2' => $address2,
             'billing_city' => $billingAddress['city'],
@@ -56,6 +62,6 @@ class CpToSeTransformer
             'recipients' => [ControlPadResource::transformCPRecipientToSERecipient($order)],
         ];
 
-        return $order;
+
     }
 }

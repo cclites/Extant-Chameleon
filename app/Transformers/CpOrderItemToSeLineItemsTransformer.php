@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 
-class CpOrderItemToSeOrderItemTransformer
+class CpOrderItemToSeLineItemsTransformer
 {
     public static function transform($items): array
     {

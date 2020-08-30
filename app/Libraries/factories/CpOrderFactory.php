@@ -11,7 +11,7 @@ class CpOrderFactory{
         $faker = Factory::create();
         $lines = [];
 
-        for($i=0; $i<3; $i += 1){
+        for($i=0; $i<1; $i += 1){
             $lines[] = ControlPadLineItemsFactory::create();
         }
 
