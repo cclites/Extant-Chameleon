@@ -21,9 +21,6 @@ class ShippingEasyController extends BaseController
     public function notifyShipped(Request $request, $client)
     {
         if(!$request->input('shipment')){
-
-            dd($request);
-
             return response()->json(['message' => 'Notify shipped message is invalid']);
         }
 

@@ -60,7 +60,7 @@ class ShippingEasyRepository extends BaseDataModelRepository
             $orderRequest = new \ShippingEasy_Order($this->authConfigs['StoreApiKey'], $order);
             $response = $orderRequest->create();
         }
-        
+
         return true;
     }
 
@@ -91,12 +91,10 @@ class ShippingEasyRepository extends BaseDataModelRepository
      */
     public function formatOrders(array $orders)
     {
-
         if(!filled($orders)){
             \Log::error("There really should be orders here");
             die("There really should be orders here. ShippingEasyRepository:formatOrders");
         }
-
 
         return collect($orders)->transform(function($order){
 
@@ -104,34 +102,6 @@ class ShippingEasyRepository extends BaseDataModelRepository
 
         });
 
-        //dump($orders);
-        //die("Died in ShippingEasyRepository:formatOrders\n");
-
-
-        //Error check to trap malformed orders
-        /*
-        $orders = collect($orders)->transform(function($order){
-
-            $valid = true;
-
-            foreach($order->lines as $line){
-                if(!$line->items){
-                    echo "*********************** ORDER HAS NO ITEMS\n";
-                    $valid = false;
-                    break;
-                }
-            }
-
-            if($valid){
-                echo "***************************  ORDER IS VALID\n";
-                return ControlPadResource::transformCPOrderToSEOrder(collect($order)->toArray());
-            }else{
-                return null;
-            }
-
-        });
-
-        return array_values(array_filter($orders->toArray()));*/
     }
 
     /**
@@ -189,90 +159,6 @@ class ShippingEasyRepository extends BaseDataModelRepository
         if (($this->secondsUntilReset / $this->remainingRequests) > 1.5 || $this->isRateLimited()) {
             sleep(1.5);
         }
-    }
-
-    public function orderData(){
-        return array(
-            "external_order_identifier" => "ABC-1004",
-            "ordered_at" => "2014-01-16 14:37:56 -0600",
-            "order_status" => "awaiting_shipment",
-            "subtotal_including_tax" => "10.00",
-            "total_including_tax" => "10.00",
-            "total_excluding_tax" => "10.00",
-            "discount_amount" => "0.00",
-            "coupon_discount" => "1.00",
-            "subtotal_including_tax" => "0.00",
-            "subtotal_excluding_tax" => "0.00",
-            "subtotal_excluding_tax" => "0.00",
-            "subtotal_tax" => "0.00",
-            "total_tax" => "0.00",
-            "base_shipping_cost" => "0.00",
-            "shipping_cost_including_tax" => "0.00",
-            "shipping_cost_excluding_tax" => "0.00",
-            "shipping_cost_tax" => "0.00",
-            "base_handling_cost" => "0.00",
-            "handling_cost_excluding_tax" => "0.00",
-            "handling_cost_including_tax" => "0.00",
-            "handling_cost_tax" => "0.00",
-            "base_wrapping_cost" => "0.00",
-            "wrapping_cost_excluding_tax" => "0.00",
-            "wrapping_cost_including_tax" => "0.00",
-            "wrapping_cost_tax" => "0.00",
-            "notes" => "Please send promptly.",
-            "billing_company" => "Acme Inc.",
-            "billing_first_name" => "Fred",
-            "billing_last_name" => "Jones",
-            "billing_address" => "1234 Street",
-            "billing_address2" => "Suite 100",
-            "billing_city" => "Austin",
-            "billing_state" => "TX",
-            "billing_postal_code" => "78701",
-            "billing_country" => "USA",
-            "billing_phone_number" => "512-123-1234",
-            "billing_email" => "test@test.com",
-            "recipients" => array(
-                array (
-                    "first_name" => "Colin",
-                    "last_name" => "Homenick",
-                    "company" => "Wintheiser-Hickle",
-                    "email" => "charles.crona@okeefe.org",
-                    "phone_number" => "637-481-6505",
-                    "residential" => "true",
-                    "address" => "21937 Adelbert Springs",
-                    "address2" => "",
-                    "province" => "",
-                    "state" => "CT",
-                    "city" => "Terryfurt",
-                    "postal_code" => "93322",
-                    "postal_code_plus_4" => "1234",
-                    "country" => "Andorra",
-                    "shipping_method" => "Ground",
-                    "base_cost" => "10.00",
-                    "cost_excluding_tax" => "10.00",
-                    "cost_tax" => "0.00",
-                    "base_handling_cost" => "0.00",
-                    "handling_cost_excluding_tax" => "0.00",
-                    "handling_cost_including_tax" => "0.00",
-                    "handling_cost_tax" => "0.00",
-                    "shipping_zone_id" => "123",
-                    "shipping_zone_name" => "XYZ",
-                    "items_total" => "1",
-                    "items_shipped" => "0",
-                    "line_items" => array (
-                        array(
-                            "item_name" => "Pencil Holder",
-                            "sku" => "9876543",
-                            "bin_picking_number" => "7",
-                            "unit_price" => "1.30",
-                            "total_excluding_tax" => "1.30",
-                            "weight_in_ounces" => "10",
-                            "product_options" => array("pa_size"=>"large","Colour"=>"Blue"),
-                            "quantity" => "1"
-                        )
-                    )
-                )
-            )
-        );
     }
 
 }
