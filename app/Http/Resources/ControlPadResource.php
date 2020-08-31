@@ -82,18 +82,19 @@ class ControlPadResource extends JsonResource
 
     public static function createTrackingForShipmentFromSE($shipment)
     {
-        $trackingUrl =  Tracking::getTrackingUrlForSe($shipment);
-        $order = collect($shipment['orders'][0]);
+        $orders = collect($shipment['orders']);
 
-        return [
-            'order_id' => $order['external_order_identifier'],
-            'number' => $shipment['tracking_number'],
-            'url' => $trackingUrl,
-            'shipped_at' => $shipment['ship_date'],
-        ];
+        return $orders->map(function($order) use($shipment){
+
+            return [
+                'order_id' => $order['external_order_identifier'],
+                'number' => $shipment['tracking_number'],
+                'url' => Tracking::getTrackingUrlForSe($shipment),
+                'shipped_at' => $shipment['ship_date'],
+            ];
+
+        });
     }
-
-
 
     public static function transformCPOrderItemToSEOrderItem(array $items):array
     {

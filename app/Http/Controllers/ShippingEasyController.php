@@ -27,22 +27,19 @@ class ShippingEasyController extends BaseController
         if($request->input('shipment')){
 
             $shipment = $request->input('shipment');
-
             $authConfig = config('auths.SHIPPINGEASY.' . $client );
+            $trackingObjects = ControlPadResource::createTrackingForShipmentFromSE($shipment);
+            $controlPadRepo = new ControlPadRepository($authConfig, null, null);
 
             if (!$authConfig) {
                 \Log::warning('ShippingEasyController::notifyShipped client config not found', ['client' => $client]);
                 abort(409, 'Client not configured');
             }
 
-            $tracking = ControlPadResource::createTrackingForShipmentFromSE($shipment);
-            $orderId = $tracking['order_id'];
-
-            $controlPad = new ControlPadRepository($authConfig, null, null);
-            $controlPad->addTracking([$tracking]);
-
-            $controlPad->patch([$orderId], 'fulfilled');
-
+            foreach($trackingObjects as $object){
+                $controlPadRepo->addTracking($object);
+                $controlPadRepo->patch($object['order_id'], 'fulfilled');
+            }
         }
 
         return response()->json(['message' => 'Notify shipped']);
