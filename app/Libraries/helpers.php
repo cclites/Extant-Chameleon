@@ -1,7 +1,4 @@
 <?php
-
-//require('integration_wrappers/ShippingEasy/lib/ShippingEasy.php');
-
 /**
  * NOTE: This is necessary because Lumen does not have the
  *       config_path or app_path helpers
